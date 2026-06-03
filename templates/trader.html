@@ -1,0 +1,807 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Analyst — {{ analyst.display_name }}</title>
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    background: #0d0d0d;
+    color: #e0e0e0;
+    font-family: 'Segoe UI', system-ui, sans-serif;
+    height: 100vh;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+  }
+
+  /* ── Top bar ── */
+  .topbar {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    background: #111;
+    border-bottom: 1px solid #222;
+    padding: 0 16px;
+    height: 44px;
+    flex-shrink: 0;
+    z-index: 10;
+  }
+  .topbar-left { display: flex; align-items: center; gap: 16px; }
+  .brand { font-size: 14px; font-weight: 700; color: #fff; letter-spacing: 0.5px; }
+  .analyst-name { font-size: 13px; color: #888; }
+  .topbar-right { display: flex; align-items: center; gap: 10px; }
+  .btn-sm {
+    background: #1e1e1e;
+    border: 1px solid #333;
+    border-radius: 5px;
+    color: #ccc;
+    cursor: pointer;
+    font-size: 12px;
+    padding: 5px 10px;
+    text-decoration: none;
+    transition: border-color 0.15s;
+  }
+  .btn-sm:hover { border-color: #555; color: #fff; }
+
+  /* ── Main layout: chart | ticket ── */
+  .main {
+    display: flex;
+    flex: 1;
+    overflow: hidden;
+  }
+
+  /* Chart panel (left, 65%) */
+  .chart-panel {
+    flex: 0 0 65%;
+    display: flex;
+    flex-direction: column;
+    border-right: 1px solid #1e1e1e;
+    position: relative;
+  }
+  .chart-toolbar {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 6px 10px;
+    background: #111;
+    border-bottom: 1px solid #1e1e1e;
+    flex-shrink: 0;
+  }
+  #sym-input {
+    background: #1a1a1a;
+    border: 1px solid #333;
+    border-radius: 5px;
+    color: #fff;
+    font-size: 13px;
+    font-weight: 600;
+    padding: 4px 9px;
+    width: 110px;
+    outline: none;
+    text-transform: uppercase;
+  }
+  #sym-input:focus { border-color: #4a9eff; }
+  .tf-btn {
+    background: #1a1a1a;
+    border: 1px solid #2a2a2a;
+    border-radius: 4px;
+    color: #aaa;
+    cursor: pointer;
+    font-size: 11px;
+    padding: 3px 7px;
+  }
+  .tf-btn.active, .tf-btn:hover { border-color: #4a9eff; color: #4a9eff; }
+  .screenshot-btn {
+    background: #1e2a1e;
+    border: 1px solid #2a3d2a;
+    border-radius: 5px;
+    color: #5fb85f;
+    cursor: pointer;
+    font-size: 12px;
+    padding: 4px 10px;
+    margin-left: auto;
+  }
+  .screenshot-btn:hover { background: #253025; }
+  #tv_chart { flex: 1; }
+
+  /* ── Right panel ── */
+  .right-panel {
+    flex: 0 0 35%;
+    display: flex;
+    flex-direction: column;
+    overflow-y: auto;
+  }
+
+  /* Trade ticket */
+  .ticket {
+    padding: 14px;
+    border-bottom: 1px solid #1e1e1e;
+    flex-shrink: 0;
+  }
+  .ticket-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 10px;
+  }
+  .section-title { font-size: 11px; text-transform: uppercase; color: #555; letter-spacing: 0.8px; }
+
+  .field-row {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 8px;
+    margin-bottom: 8px;
+  }
+  .field-row.full { grid-template-columns: 1fr; }
+
+  label.field-label {
+    display: block;
+    font-size: 10px;
+    color: #666;
+    margin-bottom: 3px;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+  }
+  .field-input {
+    width: 100%;
+    background: #111;
+    border: 1px solid #2a2a2a;
+    border-radius: 5px;
+    color: #e0e0e0;
+    font-size: 13px;
+    padding: 7px 9px;
+    outline: none;
+    transition: border-color 0.15s;
+  }
+  .field-input:focus { border-color: #4a9eff; }
+  select.field-input { cursor: pointer; }
+
+  /* Live price display */
+  .price-display {
+    text-align: center;
+    font-size: 20px;
+    font-weight: 700;
+    color: #fff;
+    padding: 4px 0 8px;
+    letter-spacing: 0.5px;
+  }
+  .price-display .price-sym { font-size: 11px; color: #555; margin-bottom: 2px; }
+
+  /* Direction buttons */
+  .dir-row { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-bottom: 8px; }
+  .dir-btn {
+    border: 2px solid #333;
+    border-radius: 6px;
+    cursor: pointer;
+    font-size: 14px;
+    font-weight: 700;
+    padding: 10px;
+    text-align: center;
+    transition: all 0.15s;
+    background: #111;
+    color: #555;
+  }
+  .dir-btn.long { border-color: #1a4a1a; color: #2d8a2d; }
+  .dir-btn.long.active { background: #1a4a1a; color: #5fdb5f; border-color: #5fdb5f; }
+  .dir-btn.short { border-color: #4a1a1a; color: #8a2d2d; }
+  .dir-btn.short.active { background: #4a1a1a; color: #db5f5f; border-color: #db5f5f; }
+
+  /* Entry toggle */
+  .entry-toggle { display: flex; gap: 6px; margin-bottom: 6px; }
+  .toggle-opt {
+    background: #111;
+    border: 1px solid #2a2a2a;
+    border-radius: 4px;
+    color: #666;
+    cursor: pointer;
+    font-size: 11px;
+    padding: 4px 10px;
+  }
+  .toggle-opt.active { border-color: #4a9eff; color: #4a9eff; background: #0a1a2e; }
+
+  /* TP rows */
+  .tp-rows { margin-bottom: 8px; }
+  .tp-row { display: flex; align-items: center; gap: 6px; margin-bottom: 5px; }
+  .tp-row .field-input { flex: 1; }
+  .tp-label { font-size: 10px; color: #555; width: 26px; flex-shrink: 0; }
+  .remove-tp {
+    background: none;
+    border: none;
+    color: #444;
+    cursor: pointer;
+    font-size: 16px;
+    line-height: 1;
+    padding: 2px 4px;
+  }
+  .remove-tp:hover { color: #e05050; }
+  .add-tp-btn {
+    background: none;
+    border: 1px dashed #333;
+    border-radius: 4px;
+    color: #555;
+    cursor: pointer;
+    font-size: 11px;
+    padding: 4px 0;
+    width: 100%;
+    margin-bottom: 8px;
+  }
+  .add-tp-btn:hover { border-color: #555; color: #888; }
+
+  /* Chart thumbnail */
+  .chart-thumb {
+    border: 1px solid #2a2a2a;
+    border-radius: 5px;
+    display: none;
+    margin-bottom: 8px;
+    overflow: hidden;
+    position: relative;
+  }
+  .chart-thumb img { display: block; width: 100%; max-height: 100px; object-fit: cover; }
+  .chart-thumb .clear-shot {
+    position: absolute;
+    top: 4px;
+    right: 4px;
+    background: rgba(0,0,0,0.7);
+    border: none;
+    border-radius: 3px;
+    color: #aaa;
+    cursor: pointer;
+    font-size: 11px;
+    padding: 2px 6px;
+  }
+
+  /* Notes */
+  .notes-toggle { font-size: 11px; color: #555; cursor: pointer; margin-bottom: 6px; }
+  .notes-toggle:hover { color: #888; }
+  #notes-field { display: none; }
+  .field-input.textarea { height: 56px; resize: none; }
+
+  /* FIRE button */
+  #fire-btn {
+    border: none;
+    border-radius: 7px;
+    cursor: pointer;
+    font-size: 16px;
+    font-weight: 800;
+    letter-spacing: 1px;
+    padding: 14px;
+    transition: all 0.15s;
+    width: 100%;
+    background: #1a1a1a;
+    color: #444;
+    margin-top: 4px;
+  }
+  #fire-btn.long-ready { background: #1a4a1a; color: #5fdb5f; }
+  #fire-btn.short-ready { background: #4a1a1a; color: #db5f5f; }
+  #fire-btn:disabled { opacity: 0.5; cursor: not-allowed; }
+  #fire-btn.flash-ok { background: #1f6b1f !important; color: #fff !important; }
+  #fire-btn.flash-err { background: #6b1f1f !important; color: #fff !important; }
+
+  .fire-result {
+    font-size: 12px;
+    margin-top: 6px;
+    min-height: 18px;
+    text-align: center;
+  }
+  .fire-result.ok { color: #5fdb5f; }
+  .fire-result.err { color: #e05050; }
+
+  /* Dry run toggle */
+  .dry-run-row {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    margin-top: 6px;
+    font-size: 11px;
+    color: #555;
+  }
+  .dry-run-row input { cursor: pointer; }
+
+  /* Positions + history panels */
+  .sub-panel { padding: 12px 14px; border-bottom: 1px solid #1a1a1a; }
+  .sub-panel table { width: 100%; border-collapse: collapse; font-size: 11px; }
+  .sub-panel th {
+    color: #555;
+    font-size: 10px;
+    font-weight: 600;
+    padding: 3px 0;
+    text-align: left;
+    text-transform: uppercase;
+  }
+  .sub-panel td { color: #ccc; padding: 4px 0; border-bottom: 1px solid #1a1a1a; }
+  .long-text { color: #5fdb5f; }
+  .short-text { color: #db5f5f; }
+  .empty-msg { color: #444; font-size: 11px; font-style: italic; }
+</style>
+</head>
+<body>
+
+<!-- Top bar -->
+<div class="topbar">
+  <div class="topbar-left">
+    <span class="brand">ANALYST</span>
+    <span class="analyst-name">{{ analyst.display_name }}</span>
+  </div>
+  <div class="topbar-right">
+    <a href="/settings" class="btn-sm">Settings</a>
+    <a href="/logout" class="btn-sm">Sign Out</a>
+  </div>
+</div>
+
+<!-- Main layout -->
+<div class="main">
+
+  <!-- ── Chart panel ── -->
+  <div class="chart-panel">
+    <div class="chart-toolbar">
+      <input id="sym-input" type="text" value="BTCUSDT" placeholder="BTCUSDT" title="TradingView symbol">
+      <button class="tf-btn active" onclick="setTF('1')">1m</button>
+      <button class="tf-btn" onclick="setTF('5')">5m</button>
+      <button class="tf-btn" onclick="setTF('15')">15m</button>
+      <button class="tf-btn" onclick="setTF('60')">1h</button>
+      <button class="tf-btn" onclick="setTF('240')">4h</button>
+      <button class="tf-btn" onclick="setTF('D')">1D</button>
+      <button class="screenshot-btn" onclick="takeScreenshot()">📸 Screenshot</button>
+    </div>
+    <div id="tv_chart"></div>
+  </div>
+
+  <!-- ── Right panel ── -->
+  <div class="right-panel">
+
+    <!-- Trade ticket -->
+    <div class="ticket">
+      <div class="ticket-header">
+        <span class="section-title">Trade Ticket</span>
+        <span id="shortcut-hint" style="font-size:10px;color:#444;">Ctrl+Enter to fire</span>
+      </div>
+
+      <!-- Exchange + Symbol -->
+      <div class="field-row">
+        <div>
+          <label class="field-label">Exchange</label>
+          <select id="exchange" class="field-input" onchange="onExchangeChange()">
+            {% for ex in exchanges %}
+            <option value="{{ ex }}" {% if ex == analyst.default_exchange %}selected{% endif %}>
+              {{ exchange_labels[ex] }}
+            </option>
+            {% endfor %}
+            {% if not exchanges %}
+            <option value="" disabled>No exchanges — go to Settings</option>
+            {% endif %}
+          </select>
+        </div>
+        <div>
+          <label class="field-label">Symbol</label>
+          <input id="symbol" list="symbol-list" class="field-input" placeholder="BTC-USDT"
+                 autocomplete="off" oninput="onSymbolChange()">
+          <datalist id="symbol-list"></datalist>
+        </div>
+      </div>
+
+      <!-- Live price -->
+      <div class="price-display">
+        <div class="price-sym" id="price-sym">—</div>
+        <span id="live-price">—</span>
+      </div>
+
+      <!-- Direction -->
+      <div class="dir-row">
+        <div class="dir-btn long" id="btn-long" onclick="setDir('long')">▲ LONG</div>
+        <div class="dir-btn short" id="btn-short" onclick="setDir('short')">▼ SHORT</div>
+      </div>
+
+      <!-- Entry -->
+      <div style="margin-bottom:6px;">
+        <label class="field-label">Entry</label>
+        <div class="entry-toggle">
+          <span class="toggle-opt active" id="tgl-market" onclick="setEntryMode('market')">Market</span>
+          <span class="toggle-opt" id="tgl-limit" onclick="setEntryMode('limit')">Limit</span>
+        </div>
+        <input id="entry-price" class="field-input" type="number" step="any" placeholder="Limit price" style="display:none;">
+      </div>
+
+      <!-- SL -->
+      <div class="field-row full" style="margin-bottom:8px;">
+        <div>
+          <label class="field-label">Stop Loss</label>
+          <input id="sl" class="field-input" type="number" step="any" placeholder="SL price">
+        </div>
+      </div>
+
+      <!-- TPs -->
+      <label class="field-label">Take Profit</label>
+      <div class="tp-rows" id="tp-rows">
+        <div class="tp-row">
+          <span class="tp-label">TP 1</span>
+          <input class="field-input tp-input" type="number" step="any" placeholder="TP price">
+        </div>
+      </div>
+      <button class="add-tp-btn" onclick="addTP()" id="add-tp-btn">+ Add TP level</button>
+
+      <!-- Risk / Leverage -->
+      <div class="field-row">
+        <div>
+          <label class="field-label">Risk %</label>
+          <input id="risk-pct" class="field-input" type="number" step="0.1" min="0.1" max="10"
+                 value="{{ (analyst.default_risk_pct * 100) | round(1) }}">
+        </div>
+        <div>
+          <label class="field-label">Leverage</label>
+          <input id="leverage" class="field-input" type="number" step="1" min="1" max="200"
+                 value="{{ analyst.default_leverage }}">
+        </div>
+      </div>
+
+      <!-- Chart thumbnail -->
+      <div class="chart-thumb" id="chart-thumb">
+        <img id="chart-thumb-img" src="" alt="chart">
+        <button class="clear-shot" onclick="clearScreenshot()">✕</button>
+      </div>
+
+      <!-- Notes -->
+      <div class="notes-toggle" onclick="toggleNotes()">+ Add notes</div>
+      <div id="notes-field">
+        <label class="field-label">Notes (appended to Discord message)</label>
+        <textarea id="notes" class="field-input textarea" placeholder="e.g. Scalp on 15m structure break..."></textarea>
+      </div>
+
+      <!-- FIRE -->
+      <button id="fire-btn" onclick="fire()">FIRE</button>
+      <div class="fire-result" id="fire-result"></div>
+
+      <!-- Dry run -->
+      <div class="dry-run-row">
+        <input type="checkbox" id="dry-run">
+        <label for="dry-run">Dry run (Discord only, no exchange order)</label>
+      </div>
+    </div>
+
+    <!-- Open positions -->
+    <div class="sub-panel">
+      <div class="section-title" style="margin-bottom:8px;">Open Positions</div>
+      <table>
+        <thead>
+          <tr>
+            <th>Symbol</th><th>Side</th><th>Entry</th><th>SL</th><th>Exchange</th>
+          </tr>
+        </thead>
+        <tbody id="positions-body">
+          <tr><td colspan="5" class="empty-msg">Loading…</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <!-- Signal history -->
+    <div class="sub-panel">
+      <div class="section-title" style="margin-bottom:8px;">Recent Signals</div>
+      <table>
+        <thead>
+          <tr><th>Time</th><th>Symbol</th><th>Side</th><th>Discord</th></tr>
+        </thead>
+        <tbody id="signals-body">
+          <tr><td colspan="4" class="empty-msg">Loading…</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+  </div><!-- end right-panel -->
+</div><!-- end main -->
+
+<script src="https://s3.tradingview.com/tv.js"></script>
+<script>
+// ── State ──────────────────────────────────────────────────────────────────
+let tvWidget = null;
+let currentTF = '1';
+let currentDir = null;
+let entryMode = 'market';
+let screenshotB64 = null;
+let priceInterval = null;
+let currentExchange = document.getElementById('exchange').value;
+
+// ── TradingView widget ─────────────────────────────────────────────────────
+function buildTV(symbol, interval) {
+  if (tvWidget) {
+    try { tvWidget.remove(); } catch(e) {}
+  }
+  tvWidget = new TradingView.widget({
+    symbol: symbol || 'BINANCE:BTCUSDT',
+    interval: interval || '1',
+    container_id: 'tv_chart',
+    autosize: true,
+    theme: 'dark',
+    style: '1',
+    locale: 'en',
+    toolbar_bg: '#0d0d0d',
+    enable_publishing: false,
+    hide_top_toolbar: false,
+    hide_legend: false,
+    save_image: false,
+    studies_overrides: {},
+    // Analysts' published indicators load automatically if they're logged into
+    // TradingView in this browser — their saved chart layouts also restore.
+    withdateranges: true,
+    allow_symbol_change: false,
+  });
+}
+
+function tvSymbol(raw) {
+  // Convert "BTC-USDT" → "BINANCE:BTCUSDT" for TradingView
+  const base = raw.replace('-USDT','').replace('/USDT','').replace('USDT','').toUpperCase();
+  return 'BINANCE:' + base + 'USDT';
+}
+
+function setTF(tf) {
+  currentTF = tf;
+  document.querySelectorAll('.tf-btn').forEach(b => b.classList.remove('active'));
+  event.target.classList.add('active');
+  const sym = document.getElementById('sym-input').value || 'BTCUSDT';
+  buildTV('BINANCE:' + sym, tf);
+}
+
+document.getElementById('sym-input').addEventListener('change', function() {
+  const sym = this.value.replace('-','').replace('/','').toUpperCase();
+  this.value = sym;
+  buildTV('BINANCE:' + sym, currentTF);
+});
+
+// Screenshot
+function takeScreenshot() {
+  if (!tvWidget) return;
+  try {
+    tvWidget.activeChart().takeClientScreenshot().then(canvas => {
+      screenshotB64 = canvas.toDataURL('image/png');
+      document.getElementById('chart-thumb-img').src = screenshotB64;
+      document.getElementById('chart-thumb').style.display = 'block';
+    }).catch(() => {
+      // Fallback: prompt user that screenshot is unavailable
+      alert('Screenshot unavailable — try the camera icon in the TradingView toolbar instead.');
+    });
+  } catch(e) {
+    alert('Screenshot unavailable — use the TradingView toolbar camera icon.');
+  }
+}
+
+function clearScreenshot() {
+  screenshotB64 = null;
+  document.getElementById('chart-thumb').style.display = 'none';
+  document.getElementById('chart-thumb-img').src = '';
+}
+
+// ── Symbol → ticket sync ───────────────────────────────────────────────────
+function onSymbolChange() {
+  const raw = document.getElementById('symbol').value.trim().toUpperCase();
+  if (!raw) return;
+  document.getElementById('price-sym').textContent = raw;
+  startPricePolling();
+}
+
+function onExchangeChange() {
+  currentExchange = document.getElementById('exchange').value;
+  fetchSymbols(currentExchange);
+  startPricePolling();
+}
+
+// ── Live price polling ─────────────────────────────────────────────────────
+function startPricePolling() {
+  if (priceInterval) clearInterval(priceInterval);
+  fetchPrice();
+  priceInterval = setInterval(fetchPrice, 2000);
+}
+
+function fetchPrice() {
+  const sym = document.getElementById('symbol').value.trim();
+  const ex = document.getElementById('exchange').value;
+  if (!sym || !ex) return;
+  fetch(`/api/price/${encodeURIComponent(sym)}?exchange=${ex}`)
+    .then(r => r.json())
+    .then(d => {
+      const el = document.getElementById('live-price');
+      if (d.price && d.price > 0) {
+        el.textContent = '$' + Number(d.price).toLocaleString('en-US', {minimumFractionDigits: 2, maximumFractionDigits: 6});
+        document.getElementById('price-sym').textContent = sym;
+      } else {
+        el.textContent = '—';
+      }
+    }).catch(() => {});
+}
+
+// ── Symbol autocomplete ────────────────────────────────────────────────────
+function fetchSymbols(exchange) {
+  if (!exchange) return;
+  fetch(`/api/symbols/${exchange}`)
+    .then(r => r.json())
+    .then(syms => {
+      const dl = document.getElementById('symbol-list');
+      dl.innerHTML = syms.map(s => `<option value="${s}">`).join('');
+    }).catch(() => {});
+}
+
+// ── Direction ─────────────────────────────────────────────────────────────
+function setDir(dir) {
+  currentDir = dir;
+  document.getElementById('btn-long').classList.toggle('active', dir === 'long');
+  document.getElementById('btn-short').classList.toggle('active', dir === 'short');
+  const btn = document.getElementById('fire-btn');
+  btn.className = dir === 'long' ? 'long-ready' : 'short-ready';
+  btn.textContent = dir === 'long' ? '▲ FIRE LONG' : '▼ FIRE SHORT';
+}
+
+// ── Entry mode ────────────────────────────────────────────────────────────
+function setEntryMode(mode) {
+  entryMode = mode;
+  document.getElementById('tgl-market').classList.toggle('active', mode === 'market');
+  document.getElementById('tgl-limit').classList.toggle('active', mode === 'limit');
+  document.getElementById('entry-price').style.display = mode === 'limit' ? 'block' : 'none';
+}
+
+// ── TP management ─────────────────────────────────────────────────────────
+function addTP() {
+  const rows = document.getElementById('tp-rows');
+  const count = rows.querySelectorAll('.tp-row').length;
+  if (count >= 5) return;
+  const div = document.createElement('div');
+  div.className = 'tp-row';
+  div.innerHTML = `
+    <span class="tp-label">TP ${count + 1}</span>
+    <input class="field-input tp-input" type="number" step="any" placeholder="TP price">
+    <button class="remove-tp" onclick="removeTP(this)">×</button>`;
+  rows.appendChild(div);
+  if (count + 1 >= 5) document.getElementById('add-tp-btn').style.display = 'none';
+}
+
+function removeTP(btn) {
+  btn.closest('.tp-row').remove();
+  document.getElementById('add-tp-btn').style.display = 'block';
+  // Re-label remaining rows
+  document.querySelectorAll('#tp-rows .tp-label').forEach((l, i) => { l.textContent = `TP ${i + 1}`; });
+}
+
+// ── Notes toggle ──────────────────────────────────────────────────────────
+function toggleNotes() {
+  const f = document.getElementById('notes-field');
+  f.style.display = f.style.display === 'none' ? 'block' : 'none';
+}
+
+// ── FIRE ──────────────────────────────────────────────────────────────────
+function fire() {
+  const btn = document.getElementById('fire-btn');
+  const resultEl = document.getElementById('fire-result');
+  resultEl.textContent = '';
+  resultEl.className = 'fire-result';
+
+  if (!currentDir) { flash('err', 'Select LONG or SHORT first'); return; }
+
+  const symbol = document.getElementById('symbol').value.trim();
+  if (!symbol) { flash('err', 'Enter a symbol'); return; }
+
+  const exchange = document.getElementById('exchange').value;
+  const sl = parseFloat(document.getElementById('sl').value) || null;
+  const entry = entryMode === 'limit' ? (parseFloat(document.getElementById('entry-price').value) || null) : null;
+  const tps = Array.from(document.querySelectorAll('.tp-input'))
+    .map(i => parseFloat(i.value))
+    .filter(v => !isNaN(v) && v > 0);
+
+  const leverage = parseInt(document.getElementById('leverage').value) || 75;
+  const riskPct = parseFloat(document.getElementById('risk-pct').value) / 100 || 0.01;
+  const notes = document.getElementById('notes').value;
+  const dryRun = document.getElementById('dry-run').checked;
+
+  btn.disabled = true;
+  const origText = btn.textContent;
+  btn.textContent = '…';
+
+  fetch('/api/fire', {
+    method: 'POST',
+    headers: {'Content-Type': 'application/json'},
+    body: JSON.stringify({
+      exchange, symbol, side: currentDir,
+      entry, sl, tps, leverage,
+      risk_pct: riskPct, notes,
+      chart_png_b64: screenshotB64 || '',
+      dry_run: dryRun,
+    })
+  })
+  .then(r => r.json())
+  .then(d => {
+    btn.disabled = false;
+    btn.textContent = origText;
+    if (d.ok) {
+      flash('ok', dryRun
+        ? `Discord sent${d.discord_ok ? ' ✓' : ' ✗'} (dry run — no order placed)`
+        : `Order placed ${d.order_id ? '#' + d.order_id : ''}${d.discord_ok ? ' · Discord ✓' : ' · Discord ✗'}`
+      );
+      clearScreenshot();
+      refreshPositions();
+      refreshSignals();
+    } else {
+      flash('err', d.error || 'Unknown error');
+    }
+  })
+  .catch(e => {
+    btn.disabled = false;
+    btn.textContent = origText;
+    flash('err', 'Network error');
+  });
+}
+
+function flash(type, msg) {
+  const btn = document.getElementById('fire-btn');
+  const el = document.getElementById('fire-result');
+  el.textContent = msg;
+  el.className = 'fire-result ' + type;
+  btn.classList.add(type === 'ok' ? 'flash-ok' : 'flash-err');
+  setTimeout(() => btn.classList.remove('flash-ok', 'flash-err'), 1200);
+}
+
+// ── Keyboard shortcut ─────────────────────────────────────────────────────
+document.addEventListener('keydown', e => {
+  if ((e.ctrlKey || e.metaKey) && e.key === 'Enter') { e.preventDefault(); fire(); }
+});
+
+// ── Positions ─────────────────────────────────────────────────────────────
+function refreshPositions() {
+  fetch('/api/positions').then(r => r.json()).then(rows => {
+    const tbody = document.getElementById('positions-body');
+    if (!rows.length) {
+      tbody.innerHTML = '<tr><td colspan="5" class="empty-msg">No open positions</td></tr>';
+      return;
+    }
+    tbody.innerHTML = rows.map(p => `
+      <tr>
+        <td>${p.symbol}</td>
+        <td class="${p.side === 'long' ? 'long-text' : 'short-text'}">${p.side.toUpperCase()}</td>
+        <td>${p.entry ? '$' + p.entry : '—'}</td>
+        <td>${p.sl ? '$' + p.sl : '—'}</td>
+        <td>${p.exchange}</td>
+      </tr>`).join('');
+  }).catch(() => {});
+}
+
+// ── Signals ───────────────────────────────────────────────────────────────
+function refreshSignals() {
+  fetch('/api/signals').then(r => r.json()).then(rows => {
+    const tbody = document.getElementById('signals-body');
+    if (!rows.length) {
+      tbody.innerHTML = '<tr><td colspan="4" class="empty-msg">No signals yet</td></tr>';
+      return;
+    }
+    tbody.innerHTML = rows.map(s => {
+      const t = new Date(s.ts).toLocaleTimeString([], {hour:'2-digit', minute:'2-digit'});
+      return `<tr>
+        <td>${t}</td>
+        <td>${s.symbol}</td>
+        <td class="${s.side === 'long' ? 'long-text' : 'short-text'}">${s.side.toUpperCase()}</td>
+        <td>${s.discord_ok ? '✓' : '✗'}</td>
+      </tr>`;
+    }).join('');
+  }).catch(() => {});
+}
+
+// ── Init ──────────────────────────────────────────────────────────────────
+document.addEventListener('DOMContentLoaded', () => {
+  buildTV('BINANCE:BTCUSDT', '1');
+  fetchSymbols(currentExchange);
+  refreshPositions();
+  refreshSignals();
+  setInterval(refreshPositions, 10000);
+  setInterval(refreshSignals, 15000);
+  startPricePolling();
+
+  // Restore last used symbol from localStorage
+  const lastSym = localStorage.getItem('lastSymbol');
+  if (lastSym) {
+    document.getElementById('symbol').value = lastSym;
+    document.getElementById('price-sym').textContent = lastSym;
+    startPricePolling();
+  }
+});
+
+// Save symbol on change
+document.getElementById('symbol').addEventListener('change', function() {
+  localStorage.setItem('lastSymbol', this.value.trim().toUpperCase());
+});
+</script>
+</body>
+</html>

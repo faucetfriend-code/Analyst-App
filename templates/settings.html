@@ -1,0 +1,268 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Settings — {{ analyst.display_name }}</title>
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    background: #0d0d0d;
+    color: #e0e0e0;
+    font-family: 'Segoe UI', system-ui, sans-serif;
+    min-height: 100vh;
+  }
+  .topbar {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    background: #111;
+    border-bottom: 1px solid #222;
+    padding: 0 20px;
+    height: 44px;
+  }
+  .topbar-left { display: flex; align-items: center; gap: 16px; }
+  .brand { font-size: 14px; font-weight: 700; color: #fff; }
+  .back-link {
+    color: #4a9eff;
+    font-size: 13px;
+    text-decoration: none;
+  }
+  .back-link:hover { text-decoration: underline; }
+  .topbar-right a {
+    color: #888;
+    font-size: 12px;
+    text-decoration: none;
+    border: 1px solid #333;
+    border-radius: 4px;
+    padding: 4px 10px;
+  }
+  .content { max-width: 640px; margin: 32px auto; padding: 0 20px; }
+  h2 { font-size: 18px; font-weight: 600; color: #fff; margin-bottom: 6px; }
+  .page-sub { font-size: 13px; color: #555; margin-bottom: 28px; }
+
+  .card {
+    background: #141414;
+    border: 1px solid #222;
+    border-radius: 10px;
+    margin-bottom: 20px;
+    overflow: hidden;
+  }
+  .card-header {
+    border-bottom: 1px solid #1e1e1e;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 14px 18px;
+  }
+  .card-title { font-size: 14px; font-weight: 600; }
+  .badge-ok {
+    background: #1a3a1a;
+    border: 1px solid #2a5a2a;
+    border-radius: 4px;
+    color: #5fdb5f;
+    font-size: 10px;
+    padding: 2px 8px;
+  }
+  .badge-no {
+    background: #1e1e1e;
+    border: 1px solid #333;
+    border-radius: 4px;
+    color: #555;
+    font-size: 10px;
+    padding: 2px 8px;
+  }
+  .card-body { padding: 18px; }
+
+  label {
+    display: block;
+    font-size: 11px;
+    color: #666;
+    margin-bottom: 4px;
+    text-transform: uppercase;
+    letter-spacing: 0.4px;
+  }
+  input[type="text"], input[type="password"], select {
+    width: 100%;
+    background: #0d0d0d;
+    border: 1px solid #2a2a2a;
+    border-radius: 6px;
+    color: #e0e0e0;
+    font-size: 13px;
+    padding: 9px 11px;
+    margin-bottom: 14px;
+    outline: none;
+    transition: border-color 0.15s;
+  }
+  input:focus, select:focus { border-color: #4a9eff; }
+  .hint { font-size: 11px; color: #444; margin-top: -10px; margin-bottom: 14px; }
+
+  .btn-save {
+    background: #1a3a5a;
+    border: 1px solid #2a5a8a;
+    border-radius: 6px;
+    color: #4a9eff;
+    cursor: pointer;
+    font-size: 13px;
+    font-weight: 600;
+    padding: 9px 20px;
+    transition: background 0.15s;
+  }
+  .btn-save:hover { background: #1e4a70; }
+
+  .save-result {
+    display: inline-block;
+    font-size: 12px;
+    margin-left: 10px;
+    min-height: 18px;
+  }
+  .save-result.ok { color: #5fdb5f; }
+  .save-result.err { color: #e05050; }
+
+  .grid2 { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+</style>
+</head>
+<body>
+
+<div class="topbar">
+  <div class="topbar-left">
+    <span class="brand">ANALYST</span>
+    <a href="/" class="back-link">← Back to trading</a>
+  </div>
+  <div class="topbar-right">
+    <a href="/logout">Sign Out</a>
+  </div>
+</div>
+
+<div class="content">
+  <h2>Settings</h2>
+  <p class="page-sub">Manage your exchange API keys and default trading parameters.</p>
+
+  <!-- Exchange credentials -->
+  {% for ex in all_exchanges %}
+  <div class="card">
+    <div class="card-header">
+      <span class="card-title">{{ {'blofin': 'BloFin', 'mexc': 'MEXC', 'bybit': 'Bybit'}[ex] }}</span>
+      {% if ex in configured %}
+      <span class="badge-ok">✓ Connected (key: {{ configured[ex] }})</span>
+      {% else %}
+      <span class="badge-no">Not configured</span>
+      {% endif %}
+    </div>
+    <div class="card-body">
+      <label>API Key</label>
+      <input type="text" id="{{ ex }}-key" placeholder="Paste API key"
+             value="{{ '••••••••' if ex in configured else '' }}" autocomplete="off">
+      <label>Secret Key</label>
+      <input type="password" id="{{ ex }}-secret" placeholder="Paste secret key" autocomplete="new-password">
+      {% if ex == 'blofin' %}
+      <label>Passphrase</label>
+      <input type="password" id="{{ ex }}-passphrase" placeholder="BloFin passphrase" autocomplete="new-password">
+      <p class="hint">BloFin requires a passphrase set when you created the API key.</p>
+      {% if ex == 'blofin' %}
+      <label>Endpoint</label>
+      <select id="{{ ex }}-baseurl">
+        <option value="https://demo-trading-openapi.blofin.com">Demo (paper trading)</option>
+        <option value="https://openapi.blofin.com">Live</option>
+      </select>
+      {% endif %}
+      {% endif %}
+      <button class="btn-save" onclick="saveCreds('{{ ex }}')">Save {{ {'blofin': 'BloFin', 'mexc': 'MEXC', 'bybit': 'Bybit'}[ex] }} Keys</button>
+      <span class="save-result" id="{{ ex }}-result"></span>
+    </div>
+  </div>
+  {% endfor %}
+
+  <!-- Default parameters -->
+  <div class="card">
+    <div class="card-header">
+      <span class="card-title">Default Parameters</span>
+    </div>
+    <div class="card-body">
+      <div class="grid2">
+        <div>
+          <label>Default Exchange</label>
+          <select id="default-exchange">
+            {% for ex in all_exchanges %}
+            <option value="{{ ex }}" {% if ex == analyst.default_exchange %}selected{% endif %}>
+              {{ {'blofin': 'BloFin', 'mexc': 'MEXC', 'bybit': 'Bybit'}[ex] }}
+            </option>
+            {% endfor %}
+          </select>
+        </div>
+        <div>
+          <label>Default Leverage</label>
+          <input type="text" id="default-leverage" value="{{ analyst.default_leverage }}">
+        </div>
+      </div>
+      <label>Risk % per trade (e.g. 1 = 1%)</label>
+      <input type="text" id="default-risk" value="{{ (analyst.default_risk_pct * 100) | round(2) }}">
+      <button class="btn-save" onclick="saveDefaults()">Save Defaults</button>
+      <span class="save-result" id="defaults-result"></span>
+    </div>
+  </div>
+
+</div>
+
+<script>
+function saveCreds(exchange) {
+  const key = document.getElementById(exchange + '-key').value.trim();
+  const secret = document.getElementById(exchange + '-secret').value.trim();
+  const passphrase = document.getElementById(exchange + '-passphrase')?.value.trim() || '';
+  const baseurlEl = document.getElementById(exchange + '-baseurl');
+  const base_url = baseurlEl ? baseurlEl.value : '';
+
+  if (!key || key === '••••••••') {
+    showResult(exchange + '-result', 'err', 'Enter API key');
+    return;
+  }
+  if (!secret) {
+    showResult(exchange + '-result', 'err', 'Enter secret key');
+    return;
+  }
+
+  fetch('/api/settings/credentials', {
+    method: 'POST',
+    headers: {'Content-Type': 'application/json'},
+    body: JSON.stringify({exchange, api_key: key, secret, passphrase, base_url}),
+  })
+  .then(r => r.json())
+  .then(d => {
+    if (d.ok) {
+      showResult(exchange + '-result', 'ok', 'Saved ✓');
+      document.getElementById(exchange + '-key').value = '••••••••';
+      document.getElementById(exchange + '-secret').value = '';
+      if (document.getElementById(exchange + '-passphrase')) {
+        document.getElementById(exchange + '-passphrase').value = '';
+      }
+    } else {
+      showResult(exchange + '-result', 'err', d.error || 'Error');
+    }
+  })
+  .catch(() => showResult(exchange + '-result', 'err', 'Network error'));
+}
+
+function saveDefaults() {
+  const default_exchange = document.getElementById('default-exchange').value;
+  const default_leverage = parseInt(document.getElementById('default-leverage').value) || 75;
+  const default_risk_pct = parseFloat(document.getElementById('default-risk').value) / 100 || 0.01;
+
+  fetch('/api/settings/defaults', {
+    method: 'POST',
+    headers: {'Content-Type': 'application/json'},
+    body: JSON.stringify({default_exchange, default_leverage, default_risk_pct}),
+  })
+  .then(r => r.json())
+  .then(d => showResult('defaults-result', d.ok ? 'ok' : 'err', d.ok ? 'Saved ✓' : (d.error || 'Error')))
+  .catch(() => showResult('defaults-result', 'err', 'Network error'));
+}
+
+function showResult(id, type, msg) {
+  const el = document.getElementById(id);
+  el.textContent = msg;
+  el.className = 'save-result ' + type;
+  setTimeout(() => { el.textContent = ''; el.className = 'save-result'; }, 3000);
+}
+</script>
+</body>
+</html>
