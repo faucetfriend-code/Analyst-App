@@ -28,15 +28,94 @@
     flex-shrink: 0;
     z-index: 10;
   }
-  .topbar-left { display: flex; align-items: center; gap: 16px; }
+  .topbar-left { display: flex; align-items: center; gap: 12px; }
   .brand { font-size: 14px; font-weight: 700; color: #fff; letter-spacing: 0.5px; }
-  .analyst-name { font-size: 13px; color: #888; }
-  .topbar-right { display: flex; align-items: center; gap: 10px; }
-  .btn-sm {
-    background: #1e1e1e;
-    border: 1px solid #333;
+  .analyst-name { font-size: 13px; color: #666; }
+
+  /* ── Symbol + timeframe bar (shared between chart and ticket) ── */
+  .symbol-bar {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    background: #111;
+    border-bottom: 1px solid #1a1a1a;
+    padding: 6px 14px;
+    flex-shrink: 0;
+  }
+  .sym-wrap {
+    position: relative;
+    display: flex;
+    align-items: center;
+  }
+  #symbol {
+    background: #1a1a1a;
+    border: 1px solid #2a2a2a;
+    border-radius: 6px;
+    color: #fff;
+    font-size: 15px;
+    font-weight: 700;
+    letter-spacing: 0.5px;
+    outline: none;
+    padding: 5px 32px 5px 10px;
+    text-transform: uppercase;
+    transition: border-color 0.15s;
+    width: 130px;
+  }
+  #symbol:focus { border-color: #4a9eff; }
+  .sym-icon {
+    position: absolute;
+    right: 8px;
+    color: #444;
+    font-size: 11px;
+    pointer-events: none;
+  }
+
+  .tf-group { display: flex; gap: 3px; }
+  .tf-btn {
+    background: #1a1a1a;
+    border: 1px solid #222;
+    border-radius: 4px;
+    color: #666;
+    cursor: pointer;
+    font-size: 11px;
+    font-weight: 600;
+    padding: 4px 8px;
+    transition: all 0.12s;
+  }
+  .tf-btn:hover { border-color: #444; color: #bbb; }
+  .tf-btn.active { background: #1a2a3a; border-color: #4a9eff; color: #4a9eff; }
+
+  .live-price {
+    margin-left: 8px;
+    font-size: 15px;
+    font-weight: 700;
+    color: #fff;
+    min-width: 110px;
+  }
+  .price-change { font-size: 11px; margin-left: 4px; }
+  .price-up { color: #5fdb5f; }
+  .price-down { color: #e05050; }
+
+  .bar-spacer { flex: 1; }
+
+  .screenshot-btn {
+    background: #1a1a1a;
+    border: 1px solid #2a2a2a;
     border-radius: 5px;
-    color: #ccc;
+    color: #888;
+    cursor: pointer;
+    font-size: 12px;
+    padding: 5px 10px;
+    transition: all 0.12s;
+  }
+  .screenshot-btn:hover { border-color: #4a7a4a; color: #5fdb5f; }
+  .screenshot-btn.has-shot { border-color: #2a5a2a; color: #5fdb5f; background: #0d1f0d; }
+
+  .btn-sm {
+    background: #1a1a1a;
+    border: 1px solid #2a2a2a;
+    border-radius: 5px;
+    color: #888;
     cursor: pointer;
     font-size: 12px;
     padding: 5px 10px;
@@ -45,67 +124,23 @@
   }
   .btn-sm:hover { border-color: #555; color: #fff; }
 
-  /* ── Main layout: chart | ticket ── */
+  /* ── Main layout ── */
   .main {
     display: flex;
     flex: 1;
     overflow: hidden;
   }
 
-  /* Chart panel (left, 65%) */
+  /* Chart panel */
   .chart-panel {
     flex: 0 0 65%;
     display: flex;
     flex-direction: column;
-    border-right: 1px solid #1e1e1e;
-    position: relative;
+    border-right: 1px solid #1a1a1a;
   }
-  .chart-toolbar {
-    display: flex;
-    align-items: center;
-    gap: 8px;
-    padding: 6px 10px;
-    background: #111;
-    border-bottom: 1px solid #1e1e1e;
-    flex-shrink: 0;
-  }
-  #sym-input {
-    background: #1a1a1a;
-    border: 1px solid #333;
-    border-radius: 5px;
-    color: #fff;
-    font-size: 13px;
-    font-weight: 600;
-    padding: 4px 9px;
-    width: 110px;
-    outline: none;
-    text-transform: uppercase;
-  }
-  #sym-input:focus { border-color: #4a9eff; }
-  .tf-btn {
-    background: #1a1a1a;
-    border: 1px solid #2a2a2a;
-    border-radius: 4px;
-    color: #aaa;
-    cursor: pointer;
-    font-size: 11px;
-    padding: 3px 7px;
-  }
-  .tf-btn.active, .tf-btn:hover { border-color: #4a9eff; color: #4a9eff; }
-  .screenshot-btn {
-    background: #1e2a1e;
-    border: 1px solid #2a3d2a;
-    border-radius: 5px;
-    color: #5fb85f;
-    cursor: pointer;
-    font-size: 12px;
-    padding: 4px 10px;
-    margin-left: auto;
-  }
-  .screenshot-btn:hover { background: #253025; }
   #tv_chart { flex: 1; }
 
-  /* ── Right panel ── */
+  /* Right panel */
   .right-panel {
     flex: 0 0 35%;
     display: flex;
@@ -113,40 +148,35 @@
     overflow-y: auto;
   }
 
-  /* Trade ticket */
+  /* ── Trade ticket ── */
   .ticket {
-    padding: 14px;
-    border-bottom: 1px solid #1e1e1e;
+    padding: 13px 14px;
+    border-bottom: 1px solid #1a1a1a;
     flex-shrink: 0;
   }
-  .ticket-header {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
+  .section-title {
+    font-size: 10px;
+    text-transform: uppercase;
+    color: #444;
+    letter-spacing: 0.8px;
     margin-bottom: 10px;
   }
-  .section-title { font-size: 11px; text-transform: uppercase; color: #555; letter-spacing: 0.8px; }
 
-  .field-row {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 8px;
-    margin-bottom: 8px;
-  }
+  .field-row { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-bottom: 8px; }
   .field-row.full { grid-template-columns: 1fr; }
 
-  label.field-label {
+  label.fl {
     display: block;
     font-size: 10px;
-    color: #666;
+    color: #555;
     margin-bottom: 3px;
     text-transform: uppercase;
-    letter-spacing: 0.5px;
+    letter-spacing: 0.4px;
   }
-  .field-input {
+  .fi {
     width: 100%;
-    background: #111;
-    border: 1px solid #2a2a2a;
+    background: #0f0f0f;
+    border: 1px solid #222;
     border-radius: 5px;
     color: #e0e0e0;
     font-size: 13px;
@@ -154,79 +184,68 @@
     outline: none;
     transition: border-color 0.15s;
   }
-  .field-input:focus { border-color: #4a9eff; }
-  select.field-input { cursor: pointer; }
+  .fi:focus { border-color: #4a9eff; }
+  select.fi { cursor: pointer; }
 
-  /* Live price display */
-  .price-display {
-    text-align: center;
-    font-size: 20px;
-    font-weight: 700;
-    color: #fff;
-    padding: 4px 0 8px;
-    letter-spacing: 0.5px;
-  }
-  .price-display .price-sym { font-size: 11px; color: #555; margin-bottom: 2px; }
-
-  /* Direction buttons */
-  .dir-row { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-bottom: 8px; }
+  /* Direction */
+  .dir-row { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-bottom: 10px; }
   .dir-btn {
-    border: 2px solid #333;
+    border: 2px solid #1e1e1e;
     border-radius: 6px;
     cursor: pointer;
-    font-size: 14px;
+    font-size: 13px;
     font-weight: 700;
-    padding: 10px;
+    padding: 9px;
     text-align: center;
-    transition: all 0.15s;
-    background: #111;
-    color: #555;
+    transition: all 0.12s;
+    background: #0d0d0d;
+    color: #333;
+    letter-spacing: 0.5px;
   }
-  .dir-btn.long { border-color: #1a4a1a; color: #2d8a2d; }
-  .dir-btn.long.active { background: #1a4a1a; color: #5fdb5f; border-color: #5fdb5f; }
-  .dir-btn.short { border-color: #4a1a1a; color: #8a2d2d; }
-  .dir-btn.short.active { background: #4a1a1a; color: #db5f5f; border-color: #db5f5f; }
+  .dir-btn.long-idle { border-color: #1a3a1a; color: #2a6a2a; }
+  .dir-btn.long-idle:hover { border-color: #2a5a2a; color: #4aaa4a; }
+  .dir-btn.long-active { background: #0d1f0d; border-color: #3aaa3a; color: #5fdb5f; }
+  .dir-btn.short-idle { border-color: #3a1a1a; color: #6a2a2a; }
+  .dir-btn.short-idle:hover { border-color: #5a2a2a; color: #aa4a4a; }
+  .dir-btn.short-active { background: #1f0d0d; border-color: #aa3a3a; color: #db5f5f; }
 
   /* Entry toggle */
-  .entry-toggle { display: flex; gap: 6px; margin-bottom: 6px; }
-  .toggle-opt {
-    background: #111;
-    border: 1px solid #2a2a2a;
+  .entry-toggle { display: flex; gap: 5px; margin-bottom: 6px; }
+  .tgl {
+    background: #0f0f0f;
+    border: 1px solid #222;
     border-radius: 4px;
-    color: #666;
+    color: #555;
     cursor: pointer;
     font-size: 11px;
     padding: 4px 10px;
+    transition: all 0.12s;
   }
-  .toggle-opt.active { border-color: #4a9eff; color: #4a9eff; background: #0a1a2e; }
+  .tgl.active { border-color: #4a9eff; color: #4a9eff; background: #081422; }
 
   /* TP rows */
-  .tp-rows { margin-bottom: 8px; }
+  .tp-rows { margin-bottom: 6px; }
   .tp-row { display: flex; align-items: center; gap: 6px; margin-bottom: 5px; }
-  .tp-row .field-input { flex: 1; }
-  .tp-label { font-size: 10px; color: #555; width: 26px; flex-shrink: 0; }
-  .remove-tp {
-    background: none;
-    border: none;
-    color: #444;
-    cursor: pointer;
-    font-size: 16px;
-    line-height: 1;
-    padding: 2px 4px;
+  .tp-row .fi { flex: 1; }
+  .tp-label { font-size: 10px; color: #444; width: 28px; flex-shrink: 0; text-align: right; }
+  .rm-tp {
+    background: none; border: none; color: #333;
+    cursor: pointer; font-size: 15px; padding: 1px 4px;
   }
-  .remove-tp:hover { color: #e05050; }
-  .add-tp-btn {
+  .rm-tp:hover { color: #e05050; }
+  .add-tp {
     background: none;
-    border: 1px dashed #333;
+    border: 1px dashed #282828;
     border-radius: 4px;
-    color: #555;
+    color: #444;
     cursor: pointer;
     font-size: 11px;
     padding: 4px 0;
     width: 100%;
     margin-bottom: 8px;
+    transition: all 0.12s;
   }
-  .add-tp-btn:hover { border-color: #555; color: #888; }
+  .add-tp:hover { border-color: #444; color: #777; }
 
   /* Chart thumbnail */
   .chart-thumb {
@@ -237,131 +256,118 @@
     overflow: hidden;
     position: relative;
   }
-  .chart-thumb img { display: block; width: 100%; max-height: 100px; object-fit: cover; }
-  .chart-thumb .clear-shot {
-    position: absolute;
-    top: 4px;
-    right: 4px;
-    background: rgba(0,0,0,0.7);
-    border: none;
-    border-radius: 3px;
-    color: #aaa;
-    cursor: pointer;
-    font-size: 11px;
-    padding: 2px 6px;
+  .chart-thumb img { display: block; width: 100%; max-height: 90px; object-fit: cover; }
+  .clear-shot {
+    position: absolute; top: 4px; right: 4px;
+    background: rgba(0,0,0,0.75); border: none;
+    border-radius: 3px; color: #aaa; cursor: pointer;
+    font-size: 10px; padding: 2px 6px;
   }
 
   /* Notes */
-  .notes-toggle { font-size: 11px; color: #555; cursor: pointer; margin-bottom: 6px; }
-  .notes-toggle:hover { color: #888; }
-  #notes-field { display: none; }
-  .field-input.textarea { height: 56px; resize: none; }
+  .notes-toggle { font-size: 11px; color: #444; cursor: pointer; margin-bottom: 6px; user-select: none; }
+  .notes-toggle:hover { color: #777; }
+  .textarea { height: 52px; resize: none; }
 
   /* FIRE button */
   #fire-btn {
-    border: none;
+    border: 2px solid #1e1e1e;
     border-radius: 7px;
     cursor: pointer;
-    font-size: 16px;
+    font-size: 15px;
     font-weight: 800;
-    letter-spacing: 1px;
-    padding: 14px;
-    transition: all 0.15s;
+    letter-spacing: 1.5px;
+    padding: 13px;
+    transition: all 0.12s;
     width: 100%;
-    background: #1a1a1a;
-    color: #444;
+    background: #0d0d0d;
+    color: #2a2a2a;
     margin-top: 4px;
   }
-  #fire-btn.long-ready { background: #1a4a1a; color: #5fdb5f; }
-  #fire-btn.short-ready { background: #4a1a1a; color: #db5f5f; }
-  #fire-btn:disabled { opacity: 0.5; cursor: not-allowed; }
-  #fire-btn.flash-ok { background: #1f6b1f !important; color: #fff !important; }
-  #fire-btn.flash-err { background: #6b1f1f !important; color: #fff !important; }
+  #fire-btn.ready-long { background: #0d1f0d; border-color: #3aaa3a; color: #5fdb5f; }
+  #fire-btn.ready-short { background: #1f0d0d; border-color: #aa3a3a; color: #db5f5f; }
+  #fire-btn.ready-long:hover { background: #102810; border-color: #5fdb5f; }
+  #fire-btn.ready-short:hover { background: #281010; border-color: #db5f5f; }
+  #fire-btn:disabled { opacity: 0.45; cursor: not-allowed; }
+  #fire-btn.flash-ok { background: #1a5a1a !important; border-color: #5fdb5f !important; color: #fff !important; }
+  #fire-btn.flash-err { background: #5a1a1a !important; border-color: #db5f5f !important; color: #fff !important; }
 
-  .fire-result {
-    font-size: 12px;
-    margin-top: 6px;
-    min-height: 18px;
-    text-align: center;
-  }
+  .fire-result { font-size: 11px; margin-top: 5px; min-height: 16px; text-align: center; }
   .fire-result.ok { color: #5fdb5f; }
   .fire-result.err { color: #e05050; }
 
-  /* Dry run toggle */
-  .dry-run-row {
-    display: flex;
-    align-items: center;
-    gap: 6px;
-    margin-top: 6px;
-    font-size: 11px;
-    color: #555;
-  }
-  .dry-run-row input { cursor: pointer; }
+  .dry-run-row { display: flex; align-items: center; gap: 6px; margin-top: 7px; font-size: 11px; color: #444; }
+  .dry-run-row input { cursor: pointer; accent-color: #4a9eff; }
 
-  /* Positions + history panels */
-  .sub-panel { padding: 12px 14px; border-bottom: 1px solid #1a1a1a; }
+  /* Sub panels */
+  .sub-panel { padding: 11px 14px; border-bottom: 1px solid #141414; }
   .sub-panel table { width: 100%; border-collapse: collapse; font-size: 11px; }
-  .sub-panel th {
-    color: #555;
-    font-size: 10px;
-    font-weight: 600;
-    padding: 3px 0;
-    text-align: left;
-    text-transform: uppercase;
-  }
-  .sub-panel td { color: #ccc; padding: 4px 0; border-bottom: 1px solid #1a1a1a; }
+  .sub-panel th { color: #444; font-size: 10px; font-weight: 600; padding: 3px 0; text-align: left; text-transform: uppercase; }
+  .sub-panel td { color: #bbb; padding: 4px 0; border-bottom: 1px solid #141414; }
   .long-text { color: #5fdb5f; }
   .short-text { color: #db5f5f; }
-  .empty-msg { color: #444; font-size: 11px; font-style: italic; }
+  .empty-msg { color: #333; font-size: 11px; font-style: italic; }
+  .ok-dot { color: #5fdb5f; }
+  .err-dot { color: #555; }
 </style>
 </head>
 <body>
 
-<!-- Top bar -->
-<div class="topbar">
-  <div class="topbar-left">
-    <span class="brand">ANALYST</span>
-    <span class="analyst-name">{{ analyst.display_name }}</span>
+<!-- ── Top / symbol bar (unified: controls both chart and ticket) ── -->
+<div class="symbol-bar">
+  <span class="brand">ANALYST</span>
+  <span class="analyst-name">{{ analyst.display_name }}</span>
+
+  <div style="width:1px;height:20px;background:#222;margin:0 4px;"></div>
+
+  <!-- Single symbol input — drives both TradingView chart AND the trade ticket -->
+  <div class="sym-wrap">
+    <input id="symbol" list="symbol-list" autocomplete="off"
+           placeholder="BTC-USDT" title="Symbol (updates chart + ticket)">
+    <span class="sym-icon">▾</span>
+    <datalist id="symbol-list"></datalist>
   </div>
-  <div class="topbar-right">
-    <a href="/settings" class="btn-sm">Settings</a>
-    <a href="/logout" class="btn-sm">Sign Out</a>
+
+  <div class="tf-group">
+    <button class="tf-btn active" data-tf="1">1m</button>
+    <button class="tf-btn" data-tf="5">5m</button>
+    <button class="tf-btn" data-tf="15">15m</button>
+    <button class="tf-btn" data-tf="60">1h</button>
+    <button class="tf-btn" data-tf="240">4h</button>
+    <button class="tf-btn" data-tf="D">1D</button>
+    <button class="tf-btn" data-tf="W">1W</button>
   </div>
+
+  <div class="live-price">
+    <span id="live-price">—</span>
+    <span class="price-change" id="price-change"></span>
+  </div>
+
+  <div class="bar-spacer"></div>
+
+  <button class="screenshot-btn" id="shot-btn" onclick="takeScreenshot()">📸 Screenshot</button>
+  <a href="/settings" class="btn-sm">Settings</a>
+  <a href="/logout" class="btn-sm">Sign Out</a>
 </div>
 
-<!-- Main layout -->
+<!-- ── Main layout ── -->
 <div class="main">
 
-  <!-- ── Chart panel ── -->
+  <!-- Chart -->
   <div class="chart-panel">
-    <div class="chart-toolbar">
-      <input id="sym-input" type="text" value="BTCUSDT" placeholder="BTCUSDT" title="TradingView symbol">
-      <button class="tf-btn active" onclick="setTF('1')">1m</button>
-      <button class="tf-btn" onclick="setTF('5')">5m</button>
-      <button class="tf-btn" onclick="setTF('15')">15m</button>
-      <button class="tf-btn" onclick="setTF('60')">1h</button>
-      <button class="tf-btn" onclick="setTF('240')">4h</button>
-      <button class="tf-btn" onclick="setTF('D')">1D</button>
-      <button class="screenshot-btn" onclick="takeScreenshot()">📸 Screenshot</button>
-    </div>
     <div id="tv_chart"></div>
   </div>
 
-  <!-- ── Right panel ── -->
+  <!-- Right panel -->
   <div class="right-panel">
-
-    <!-- Trade ticket -->
     <div class="ticket">
-      <div class="ticket-header">
-        <span class="section-title">Trade Ticket</span>
-        <span id="shortcut-hint" style="font-size:10px;color:#444;">Ctrl+Enter to fire</span>
-      </div>
+      <div class="section-title">Trade Ticket</div>
 
-      <!-- Exchange + Symbol -->
-      <div class="field-row">
+      <!-- Exchange -->
+      <div class="field-row full" style="margin-bottom:10px;">
         <div>
-          <label class="field-label">Exchange</label>
-          <select id="exchange" class="field-input" onchange="onExchangeChange()">
+          <label class="fl">Exchange</label>
+          <select id="exchange" class="fi" onchange="onExchangeChange()">
             {% for ex in exchanges %}
             <option value="{{ ex }}" {% if ex == analyst.default_exchange %}selected{% endif %}>
               {{ exchange_labels[ex] }}
@@ -372,64 +378,53 @@
             {% endif %}
           </select>
         </div>
-        <div>
-          <label class="field-label">Symbol</label>
-          <input id="symbol" list="symbol-list" class="field-input" placeholder="BTC-USDT"
-                 autocomplete="off" oninput="onSymbolChange()">
-          <datalist id="symbol-list"></datalist>
-        </div>
-      </div>
-
-      <!-- Live price -->
-      <div class="price-display">
-        <div class="price-sym" id="price-sym">—</div>
-        <span id="live-price">—</span>
       </div>
 
       <!-- Direction -->
       <div class="dir-row">
-        <div class="dir-btn long" id="btn-long" onclick="setDir('long')">▲ LONG</div>
-        <div class="dir-btn short" id="btn-short" onclick="setDir('short')">▼ SHORT</div>
+        <div class="dir-btn long-idle" id="btn-long" onclick="setDir('long')">▲ LONG</div>
+        <div class="dir-btn short-idle" id="btn-short" onclick="setDir('short')">▼ SHORT</div>
       </div>
 
       <!-- Entry -->
-      <div style="margin-bottom:6px;">
-        <label class="field-label">Entry</label>
+      <div style="margin-bottom:8px;">
+        <label class="fl">Entry</label>
         <div class="entry-toggle">
-          <span class="toggle-opt active" id="tgl-market" onclick="setEntryMode('market')">Market</span>
-          <span class="toggle-opt" id="tgl-limit" onclick="setEntryMode('limit')">Limit</span>
+          <span class="tgl active" id="tgl-market" onclick="setEntryMode('market')">Market (CMP)</span>
+          <span class="tgl" id="tgl-limit" onclick="setEntryMode('limit')">Limit</span>
         </div>
-        <input id="entry-price" class="field-input" type="number" step="any" placeholder="Limit price" style="display:none;">
+        <input id="entry-price" class="fi" type="number" step="any"
+               placeholder="Limit price" style="display:none;">
       </div>
 
       <!-- SL -->
       <div class="field-row full" style="margin-bottom:8px;">
         <div>
-          <label class="field-label">Stop Loss</label>
-          <input id="sl" class="field-input" type="number" step="any" placeholder="SL price">
+          <label class="fl">Stop Loss</label>
+          <input id="sl" class="fi" type="number" step="any" placeholder="SL price">
         </div>
       </div>
 
       <!-- TPs -->
-      <label class="field-label">Take Profit</label>
+      <label class="fl">Take Profit</label>
       <div class="tp-rows" id="tp-rows">
         <div class="tp-row">
           <span class="tp-label">TP 1</span>
-          <input class="field-input tp-input" type="number" step="any" placeholder="TP price">
+          <input class="fi tp-input" type="number" step="any" placeholder="TP price">
         </div>
       </div>
-      <button class="add-tp-btn" onclick="addTP()" id="add-tp-btn">+ Add TP level</button>
+      <button class="add-tp" id="add-tp-btn" onclick="addTP()">+ Add TP level</button>
 
       <!-- Risk / Leverage -->
       <div class="field-row">
         <div>
-          <label class="field-label">Risk %</label>
-          <input id="risk-pct" class="field-input" type="number" step="0.1" min="0.1" max="10"
+          <label class="fl">Risk %</label>
+          <input id="risk-pct" class="fi" type="number" step="0.1" min="0.1" max="10"
                  value="{{ (analyst.default_risk_pct * 100) | round(1) }}">
         </div>
         <div>
-          <label class="field-label">Leverage</label>
-          <input id="leverage" class="field-input" type="number" step="1" min="1" max="200"
+          <label class="fl">Leverage</label>
+          <input id="leverage" class="fi" type="number" step="1" min="1" max="200"
                  value="{{ analyst.default_leverage }}">
         </div>
       </div>
@@ -437,153 +432,161 @@
       <!-- Chart thumbnail -->
       <div class="chart-thumb" id="chart-thumb">
         <img id="chart-thumb-img" src="" alt="chart">
-        <button class="clear-shot" onclick="clearScreenshot()">✕</button>
+        <button class="clear-shot" onclick="clearScreenshot()">✕ clear</button>
       </div>
 
       <!-- Notes -->
-      <div class="notes-toggle" onclick="toggleNotes()">+ Add notes</div>
-      <div id="notes-field">
-        <label class="field-label">Notes (appended to Discord message)</label>
-        <textarea id="notes" class="field-input textarea" placeholder="e.g. Scalp on 15m structure break..."></textarea>
+      <div class="notes-toggle" id="notes-toggle" onclick="toggleNotes()">+ Add notes</div>
+      <div id="notes-wrap" style="display:none;">
+        <textarea id="notes" class="fi textarea" placeholder="e.g. 15m structure break, scalp..."></textarea>
       </div>
 
       <!-- FIRE -->
       <button id="fire-btn" onclick="fire()">FIRE</button>
       <div class="fire-result" id="fire-result"></div>
 
-      <!-- Dry run -->
       <div class="dry-run-row">
         <input type="checkbox" id="dry-run">
-        <label for="dry-run">Dry run (Discord only, no exchange order)</label>
+        <label for="dry-run">Dry run — post Discord only, no exchange order</label>
       </div>
     </div>
 
     <!-- Open positions -->
     <div class="sub-panel">
-      <div class="section-title" style="margin-bottom:8px;">Open Positions</div>
+      <div class="section-title">Open Positions</div>
       <table>
-        <thead>
-          <tr>
-            <th>Symbol</th><th>Side</th><th>Entry</th><th>SL</th><th>Exchange</th>
-          </tr>
-        </thead>
+        <thead><tr><th>Symbol</th><th>Side</th><th>Entry</th><th>SL</th><th>Exch</th></tr></thead>
         <tbody id="positions-body">
-          <tr><td colspan="5" class="empty-msg">Loading…</td></tr>
+          <tr><td colspan="5" class="empty-msg">No open positions</td></tr>
         </tbody>
       </table>
     </div>
 
     <!-- Signal history -->
     <div class="sub-panel">
-      <div class="section-title" style="margin-bottom:8px;">Recent Signals</div>
+      <div class="section-title">Signal History</div>
       <table>
-        <thead>
-          <tr><th>Time</th><th>Symbol</th><th>Side</th><th>Discord</th></tr>
-        </thead>
+        <thead><tr><th>Time</th><th>Symbol</th><th>Side</th><th>Exch</th><th>Discord</th></tr></thead>
         <tbody id="signals-body">
-          <tr><td colspan="4" class="empty-msg">Loading…</td></tr>
+          <tr><td colspan="5" class="empty-msg">No signals yet</td></tr>
         </tbody>
       </table>
     </div>
-
-  </div><!-- end right-panel -->
-</div><!-- end main -->
+  </div>
+</div>
 
 <script src="https://s3.tradingview.com/tv.js"></script>
 <script>
-// ── State ──────────────────────────────────────────────────────────────────
+// ── State ────────────────────────────────────────────────────────────────
 let tvWidget = null;
 let currentTF = '1';
 let currentDir = null;
 let entryMode = 'market';
 let screenshotB64 = null;
 let priceInterval = null;
-let currentExchange = document.getElementById('exchange').value;
+let lastPrice = null;
+let symbolChangeTimeout = null;
 
-// ── TradingView widget ─────────────────────────────────────────────────────
+// ── TradingView ──────────────────────────────────────────────────────────
+function tvSymbol(raw) {
+  // "BTC-USDT" or "BTC" → "BINANCE:BTCUSDT" for TradingView
+  const base = raw.replace('-USDT','').replace('/USDT','').replace(/USDT$/,'').toUpperCase();
+  return 'BINANCE:' + base + 'USDT';
+}
+
 function buildTV(symbol, interval) {
   if (tvWidget) {
-    try { tvWidget.remove(); } catch(e) {}
+    try {
+      // If widget already exists, just change the symbol — much faster than rebuilding
+      tvWidget.setSymbol(tvSymbol(symbol), interval || currentTF, () => {});
+      return;
+    } catch(e) {}
   }
+  if (tvWidget) { try { tvWidget.remove(); } catch(e) {} }
   tvWidget = new TradingView.widget({
-    symbol: symbol || 'BINANCE:BTCUSDT',
+    symbol: tvSymbol(symbol || 'BTC-USDT'),
     interval: interval || '1',
     container_id: 'tv_chart',
     autosize: true,
     theme: 'dark',
     style: '1',
     locale: 'en',
-    toolbar_bg: '#0d0d0d',
+    toolbar_bg: '#111111',
     enable_publishing: false,
     hide_top_toolbar: false,
-    hide_legend: false,
-    save_image: false,
-    studies_overrides: {},
-    // Analysts' published indicators load automatically if they're logged into
-    // TradingView in this browser — their saved chart layouts also restore.
     withdateranges: true,
-    allow_symbol_change: false,
+    allow_symbol_change: true,   // analysts can also change from within the chart
+    save_image: true,
+    // When analyst is logged into TradingView, their saved layouts + published
+    // indicators (including invite-only scripts) load from their TV account.
   });
-}
 
-function tvSymbol(raw) {
-  // Convert "BTC-USDT" → "BINANCE:BTCUSDT" for TradingView
-  const base = raw.replace('-USDT','').replace('/USDT','').replace('USDT','').toUpperCase();
-  return 'BINANCE:' + base + 'USDT';
+  // Listen for symbol changes made from within the TV chart toolbar
+  tvWidget.onChartReady(() => {
+    tvWidget.activeChart().onSymbolChanged().subscribe(null, () => {
+      try {
+        const tvSym = tvWidget.activeChart().symbol();
+        // Convert "BINANCE:BTCUSDT" → "BTC-USDT"
+        const base = tvSym.replace(/.*:/, '').replace('USDT','');
+        const normalised = base + '-USDT';
+        const symInput = document.getElementById('symbol');
+        if (symInput.value.toUpperCase() !== normalised.toUpperCase()) {
+          symInput.value = normalised;
+          onSymbolInput(normalised, false); // update price, don't push back to TV
+        }
+      } catch(e) {}
+    });
+  });
 }
 
 function setTF(tf) {
   currentTF = tf;
-  document.querySelectorAll('.tf-btn').forEach(b => b.classList.remove('active'));
-  event.target.classList.add('active');
-  const sym = document.getElementById('sym-input').value || 'BTCUSDT';
-  buildTV('BINANCE:' + sym, tf);
-}
-
-document.getElementById('sym-input').addEventListener('change', function() {
-  const sym = this.value.replace('-','').replace('/','').toUpperCase();
-  this.value = sym;
-  buildTV('BINANCE:' + sym, currentTF);
-});
-
-// Screenshot
-function takeScreenshot() {
-  if (!tvWidget) return;
-  try {
-    tvWidget.activeChart().takeClientScreenshot().then(canvas => {
-      screenshotB64 = canvas.toDataURL('image/png');
-      document.getElementById('chart-thumb-img').src = screenshotB64;
-      document.getElementById('chart-thumb').style.display = 'block';
-    }).catch(() => {
-      // Fallback: prompt user that screenshot is unavailable
-      alert('Screenshot unavailable — try the camera icon in the TradingView toolbar instead.');
-    });
-  } catch(e) {
-    alert('Screenshot unavailable — use the TradingView toolbar camera icon.');
+  document.querySelectorAll('.tf-btn').forEach(b => b.classList.toggle('active', b.dataset.tf === tf));
+  if (tvWidget) {
+    try { tvWidget.activeChart().setResolution(tf, () => {}); } catch(e) {}
   }
 }
 
-function clearScreenshot() {
-  screenshotB64 = null;
-  document.getElementById('chart-thumb').style.display = 'none';
-  document.getElementById('chart-thumb-img').src = '';
-}
+document.querySelectorAll('.tf-btn').forEach(btn => {
+  btn.addEventListener('click', () => setTF(btn.dataset.tf));
+});
 
-// ── Symbol → ticket sync ───────────────────────────────────────────────────
-function onSymbolChange() {
-  const raw = document.getElementById('symbol').value.trim().toUpperCase();
-  if (!raw) return;
-  document.getElementById('price-sym').textContent = raw;
+// ── Symbol input — unified control for chart + ticket ────────────────────
+document.getElementById('symbol').addEventListener('input', function() {
+  clearTimeout(symbolChangeTimeout);
+  const val = this.value.trim().toUpperCase();
+  // Debounce TV symbol change by 600ms so it doesn't thrash while typing
+  symbolChangeTimeout = setTimeout(() => onSymbolInput(val, true), 600);
+});
+
+document.getElementById('symbol').addEventListener('change', function() {
+  clearTimeout(symbolChangeTimeout);
+  const val = this.value.trim().toUpperCase();
+  onSymbolInput(val, true);
+  localStorage.setItem('lastSymbol', val);
+});
+
+function onSymbolInput(val, updateTV) {
+  if (!val) return;
+  // Normalise: accept BTC, BTCUSDT, BTC/USDT, BTC-USDT
+  let sym = val.replace('/','').replace('-','');
+  if (!sym.endsWith('USDT')) sym = sym + 'USDT';
+  const display = sym.replace('USDT','-USDT'); // BTC-USDT
+
+  document.getElementById('symbol').value = display;
   startPricePolling();
+
+  if (updateTV) {
+    if (tvWidget) {
+      try { tvWidget.setSymbol(tvSymbol(display), currentTF, () => {}); }
+      catch(e) { buildTV(display, currentTF); }
+    } else {
+      buildTV(display, currentTF);
+    }
+  }
 }
 
-function onExchangeChange() {
-  currentExchange = document.getElementById('exchange').value;
-  fetchSymbols(currentExchange);
-  startPricePolling();
-}
-
-// ── Live price polling ─────────────────────────────────────────────────────
+// ── Live price ────────────────────────────────────────────────────────────
 function startPricePolling() {
   if (priceInterval) clearInterval(priceInterval);
   fetchPrice();
@@ -592,22 +595,32 @@ function startPricePolling() {
 
 function fetchPrice() {
   const sym = document.getElementById('symbol').value.trim();
-  const ex = document.getElementById('exchange').value;
+  const ex  = document.getElementById('exchange').value;
   if (!sym || !ex) return;
   fetch(`/api/price/${encodeURIComponent(sym)}?exchange=${ex}`)
     .then(r => r.json())
     .then(d => {
-      const el = document.getElementById('live-price');
-      if (d.price && d.price > 0) {
-        el.textContent = '$' + Number(d.price).toLocaleString('en-US', {minimumFractionDigits: 2, maximumFractionDigits: 6});
-        document.getElementById('price-sym').textContent = sym;
-      } else {
-        el.textContent = '—';
+      if (!d.price || d.price <= 0) return;
+      const priceEl  = document.getElementById('live-price');
+      const changeEl = document.getElementById('price-change');
+      const fmt = p => '$' + Number(p).toLocaleString('en-US', {minimumFractionDigits: 2, maximumFractionDigits: 6});
+      if (lastPrice !== null && lastPrice !== d.price) {
+        const up = d.price > lastPrice;
+        changeEl.textContent = up ? '▲' : '▼';
+        changeEl.className = 'price-change ' + (up ? 'price-up' : 'price-down');
+        setTimeout(() => { changeEl.textContent = ''; changeEl.className = 'price-change'; }, 1500);
       }
+      priceEl.textContent = fmt(d.price);
+      lastPrice = d.price;
     }).catch(() => {});
 }
 
-// ── Symbol autocomplete ────────────────────────────────────────────────────
+function onExchangeChange() {
+  fetchSymbols(document.getElementById('exchange').value);
+  startPricePolling();
+}
+
+// ── Symbol autocomplete ───────────────────────────────────────────────────
 function fetchSymbols(exchange) {
   if (!exchange) return;
   fetch(`/api/symbols/${exchange}`)
@@ -621,72 +634,100 @@ function fetchSymbols(exchange) {
 // ── Direction ─────────────────────────────────────────────────────────────
 function setDir(dir) {
   currentDir = dir;
-  document.getElementById('btn-long').classList.toggle('active', dir === 'long');
-  document.getElementById('btn-short').classList.toggle('active', dir === 'short');
-  const btn = document.getElementById('fire-btn');
-  btn.className = dir === 'long' ? 'long-ready' : 'short-ready';
-  btn.textContent = dir === 'long' ? '▲ FIRE LONG' : '▼ FIRE SHORT';
+  const btnL = document.getElementById('btn-long');
+  const btnS = document.getElementById('btn-short');
+  btnL.className = 'dir-btn ' + (dir === 'long' ? 'long-active' : 'long-idle');
+  btnS.className = 'dir-btn ' + (dir === 'short' ? 'short-active' : 'short-idle');
+  const fireBtn = document.getElementById('fire-btn');
+  fireBtn.className = dir === 'long' ? 'ready-long' : 'ready-short';
+  fireBtn.textContent = dir === 'long' ? '▲  FIRE LONG' : '▼  FIRE SHORT';
 }
 
 // ── Entry mode ────────────────────────────────────────────────────────────
 function setEntryMode(mode) {
   entryMode = mode;
   document.getElementById('tgl-market').classList.toggle('active', mode === 'market');
-  document.getElementById('tgl-limit').classList.toggle('active', mode === 'limit');
+  document.getElementById('tgl-limit').classList.toggle('active',  mode === 'limit');
   document.getElementById('entry-price').style.display = mode === 'limit' ? 'block' : 'none';
 }
 
-// ── TP management ─────────────────────────────────────────────────────────
+// ── TPs ───────────────────────────────────────────────────────────────────
 function addTP() {
   const rows = document.getElementById('tp-rows');
-  const count = rows.querySelectorAll('.tp-row').length;
-  if (count >= 5) return;
+  const n = rows.querySelectorAll('.tp-row').length;
+  if (n >= 5) return;
   const div = document.createElement('div');
   div.className = 'tp-row';
-  div.innerHTML = `
-    <span class="tp-label">TP ${count + 1}</span>
-    <input class="field-input tp-input" type="number" step="any" placeholder="TP price">
-    <button class="remove-tp" onclick="removeTP(this)">×</button>`;
+  div.innerHTML = `<span class="tp-label">TP ${n+1}</span>
+    <input class="fi tp-input" type="number" step="any" placeholder="TP price">
+    <button class="rm-tp" onclick="removeTP(this)">×</button>`;
   rows.appendChild(div);
-  if (count + 1 >= 5) document.getElementById('add-tp-btn').style.display = 'none';
+  if (n + 1 >= 5) document.getElementById('add-tp-btn').style.display = 'none';
 }
 
 function removeTP(btn) {
   btn.closest('.tp-row').remove();
   document.getElementById('add-tp-btn').style.display = 'block';
-  // Re-label remaining rows
-  document.querySelectorAll('#tp-rows .tp-label').forEach((l, i) => { l.textContent = `TP ${i + 1}`; });
+  document.querySelectorAll('#tp-rows .tp-label').forEach((l,i) => { l.textContent = `TP ${i+1}`; });
 }
 
-// ── Notes toggle ──────────────────────────────────────────────────────────
+// ── Notes ─────────────────────────────────────────────────────────────────
 function toggleNotes() {
-  const f = document.getElementById('notes-field');
-  f.style.display = f.style.display === 'none' ? 'block' : 'none';
+  const wrap = document.getElementById('notes-wrap');
+  const tog  = document.getElementById('notes-toggle');
+  const open = wrap.style.display !== 'none';
+  wrap.style.display = open ? 'none' : 'block';
+  tog.textContent = open ? '+ Add notes' : '− Hide notes';
+}
+
+// ── Screenshot ────────────────────────────────────────────────────────────
+function takeScreenshot() {
+  if (!tvWidget) { alert('Chart not loaded yet.'); return; }
+  try {
+    tvWidget.activeChart().takeClientScreenshot().then(canvas => {
+      screenshotB64 = canvas.toDataURL('image/png');
+      document.getElementById('chart-thumb-img').src = screenshotB64;
+      document.getElementById('chart-thumb').style.display = 'block';
+      document.getElementById('shot-btn').classList.add('has-shot');
+      document.getElementById('shot-btn').textContent = '✓ Screenshot';
+    }).catch(() => fallbackScreenshot());
+  } catch(e) { fallbackScreenshot(); }
+}
+
+function fallbackScreenshot() {
+  // TradingView's own screenshot — opens a link in a new tab which the analyst
+  // can then paste into the Discord notes field manually.
+  try { tvWidget.activeChart().executeActionById('takeScreenshot'); }
+  catch(e) { alert('Screenshot unavailable. Use the camera icon in the TradingView toolbar.'); }
+}
+
+function clearScreenshot() {
+  screenshotB64 = null;
+  document.getElementById('chart-thumb').style.display = 'none';
+  document.getElementById('chart-thumb-img').src = '';
+  document.getElementById('shot-btn').classList.remove('has-shot');
+  document.getElementById('shot-btn').textContent = '📸 Screenshot';
 }
 
 // ── FIRE ──────────────────────────────────────────────────────────────────
 function fire() {
-  const btn = document.getElementById('fire-btn');
+  const btn      = document.getElementById('fire-btn');
   const resultEl = document.getElementById('fire-result');
   resultEl.textContent = '';
-  resultEl.className = 'fire-result';
 
   if (!currentDir) { flash('err', 'Select LONG or SHORT first'); return; }
-
   const symbol = document.getElementById('symbol').value.trim();
   if (!symbol) { flash('err', 'Enter a symbol'); return; }
 
   const exchange = document.getElementById('exchange').value;
-  const sl = parseFloat(document.getElementById('sl').value) || null;
-  const entry = entryMode === 'limit' ? (parseFloat(document.getElementById('entry-price').value) || null) : null;
-  const tps = Array.from(document.querySelectorAll('.tp-input'))
-    .map(i => parseFloat(i.value))
-    .filter(v => !isNaN(v) && v > 0);
-
-  const leverage = parseInt(document.getElementById('leverage').value) || 75;
-  const riskPct = parseFloat(document.getElementById('risk-pct').value) / 100 || 0.01;
-  const notes = document.getElementById('notes').value;
-  const dryRun = document.getElementById('dry-run').checked;
+  const sl       = parseFloat(document.getElementById('sl').value) || null;
+  const entry    = entryMode === 'limit' ? (parseFloat(document.getElementById('entry-price').value) || null) : null;
+  const tps      = Array.from(document.querySelectorAll('.tp-input'))
+                       .map(i => parseFloat(i.value)).filter(v => !isNaN(v) && v > 0);
+  const leverage = parseInt(document.getElementById('leverage').value)  || 75;
+  const riskPct  = parseFloat(document.getElementById('risk-pct').value) / 100 || 0.01;
+  const notes    = document.getElementById('notes').value;
+  const dryRun   = document.getElementById('dry-run').checked;
 
   btn.disabled = true;
   const origText = btn.textContent;
@@ -695,23 +736,19 @@ function fire() {
   fetch('/api/fire', {
     method: 'POST',
     headers: {'Content-Type': 'application/json'},
-    body: JSON.stringify({
-      exchange, symbol, side: currentDir,
-      entry, sl, tps, leverage,
-      risk_pct: riskPct, notes,
-      chart_png_b64: screenshotB64 || '',
-      dry_run: dryRun,
-    })
+    body: JSON.stringify({ exchange, symbol, side: currentDir,
+      entry, sl, tps, leverage, risk_pct: riskPct, notes,
+      chart_png_b64: screenshotB64 || '', dry_run: dryRun })
   })
   .then(r => r.json())
   .then(d => {
     btn.disabled = false;
     btn.textContent = origText;
     if (d.ok) {
+      const discordNote = d.discord_ok ? ' · Discord ✓' : ' · Discord ✗';
       flash('ok', dryRun
-        ? `Discord sent${d.discord_ok ? ' ✓' : ' ✗'} (dry run — no order placed)`
-        : `Order placed ${d.order_id ? '#' + d.order_id : ''}${d.discord_ok ? ' · Discord ✓' : ' · Discord ✗'}`
-      );
+        ? `Dry run${discordNote}`
+        : `Order placed${d.order_id ? ' #' + d.order_id : ''}${discordNote}`);
       clearScreenshot();
       refreshPositions();
       refreshSignals();
@@ -719,88 +756,65 @@ function fire() {
       flash('err', d.error || 'Unknown error');
     }
   })
-  .catch(e => {
-    btn.disabled = false;
-    btn.textContent = origText;
-    flash('err', 'Network error');
-  });
+  .catch(() => { btn.disabled = false; btn.textContent = origText; flash('err', 'Network error'); });
 }
 
 function flash(type, msg) {
   const btn = document.getElementById('fire-btn');
-  const el = document.getElementById('fire-result');
+  const el  = document.getElementById('fire-result');
   el.textContent = msg;
-  el.className = 'fire-result ' + type;
+  el.className   = 'fire-result ' + type;
   btn.classList.add(type === 'ok' ? 'flash-ok' : 'flash-err');
-  setTimeout(() => btn.classList.remove('flash-ok', 'flash-err'), 1200);
+  setTimeout(() => btn.classList.remove('flash-ok','flash-err'), 1400);
 }
 
-// ── Keyboard shortcut ─────────────────────────────────────────────────────
+// Ctrl+Enter fires
 document.addEventListener('keydown', e => {
   if ((e.ctrlKey || e.metaKey) && e.key === 'Enter') { e.preventDefault(); fire(); }
 });
 
-// ── Positions ─────────────────────────────────────────────────────────────
+// ── Positions + history ───────────────────────────────────────────────────
 function refreshPositions() {
   fetch('/api/positions').then(r => r.json()).then(rows => {
-    const tbody = document.getElementById('positions-body');
-    if (!rows.length) {
-      tbody.innerHTML = '<tr><td colspan="5" class="empty-msg">No open positions</td></tr>';
-      return;
-    }
-    tbody.innerHTML = rows.map(p => `
-      <tr>
-        <td>${p.symbol}</td>
-        <td class="${p.side === 'long' ? 'long-text' : 'short-text'}">${p.side.toUpperCase()}</td>
-        <td>${p.entry ? '$' + p.entry : '—'}</td>
-        <td>${p.sl ? '$' + p.sl : '—'}</td>
-        <td>${p.exchange}</td>
-      </tr>`).join('');
-  }).catch(() => {});
+    const tb = document.getElementById('positions-body');
+    if (!rows.length) { tb.innerHTML = '<tr><td colspan="5" class="empty-msg">No open positions</td></tr>'; return; }
+    tb.innerHTML = rows.map(p => `<tr>
+      <td>${p.symbol}</td>
+      <td class="${p.side==='long'?'long-text':'short-text'}">${p.side.toUpperCase()}</td>
+      <td>${p.entry ? '$'+p.entry : '—'}</td>
+      <td>${p.sl   ? '$'+p.sl   : '—'}</td>
+      <td>${p.exchange}</td></tr>`).join('');
+  }).catch(()=>{});
 }
 
-// ── Signals ───────────────────────────────────────────────────────────────
 function refreshSignals() {
   fetch('/api/signals').then(r => r.json()).then(rows => {
-    const tbody = document.getElementById('signals-body');
-    if (!rows.length) {
-      tbody.innerHTML = '<tr><td colspan="4" class="empty-msg">No signals yet</td></tr>';
-      return;
-    }
-    tbody.innerHTML = rows.map(s => {
-      const t = new Date(s.ts).toLocaleTimeString([], {hour:'2-digit', minute:'2-digit'});
+    const tb = document.getElementById('signals-body');
+    if (!rows.length) { tb.innerHTML = '<tr><td colspan="5" class="empty-msg">No signals yet</td></tr>'; return; }
+    tb.innerHTML = rows.map(s => {
+      const t = new Date(s.ts).toLocaleTimeString([],{hour:'2-digit',minute:'2-digit'});
       return `<tr>
         <td>${t}</td>
         <td>${s.symbol}</td>
-        <td class="${s.side === 'long' ? 'long-text' : 'short-text'}">${s.side.toUpperCase()}</td>
-        <td>${s.discord_ok ? '✓' : '✗'}</td>
+        <td class="${s.side==='long'?'long-text':'short-text'}">${s.side.toUpperCase()}</td>
+        <td>${s.exchange}</td>
+        <td>${s.discord_ok ? '<span class="ok-dot">✓</span>' : '<span class="err-dot">✗</span>'}</td>
       </tr>`;
     }).join('');
-  }).catch(() => {});
+  }).catch(()=>{});
 }
 
 // ── Init ──────────────────────────────────────────────────────────────────
 document.addEventListener('DOMContentLoaded', () => {
-  buildTV('BINANCE:BTCUSDT', '1');
-  fetchSymbols(currentExchange);
+  const saved = localStorage.getItem('lastSymbol') || 'BTC-USDT';
+  document.getElementById('symbol').value = saved;
+  buildTV(saved, '1');
+  fetchSymbols(document.getElementById('exchange').value);
+  startPricePolling();
   refreshPositions();
   refreshSignals();
   setInterval(refreshPositions, 10000);
-  setInterval(refreshSignals, 15000);
-  startPricePolling();
-
-  // Restore last used symbol from localStorage
-  const lastSym = localStorage.getItem('lastSymbol');
-  if (lastSym) {
-    document.getElementById('symbol').value = lastSym;
-    document.getElementById('price-sym').textContent = lastSym;
-    startPricePolling();
-  }
-});
-
-// Save symbol on change
-document.getElementById('symbol').addEventListener('change', function() {
-  localStorage.setItem('lastSymbol', this.value.trim().toUpperCase());
+  setInterval(refreshSignals,  15000);
 });
 </script>
 </body>
