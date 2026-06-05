@@ -17,22 +17,6 @@
   }
 
   /* ── Top bar ── */
-  .topbar {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    background: #111;
-    border-bottom: 1px solid #222;
-    padding: 0 16px;
-    height: 44px;
-    flex-shrink: 0;
-    z-index: 10;
-  }
-  .topbar-left { display: flex; align-items: center; gap: 12px; }
-  .brand { font-size: 14px; font-weight: 700; color: #fff; letter-spacing: 0.5px; }
-  .analyst-name { font-size: 13px; color: #666; }
-
-  /* ── Symbol + timeframe bar (shared between chart and ticket) ── */
   .symbol-bar {
     display: flex;
     align-items: center;
@@ -42,165 +26,89 @@
     padding: 6px 14px;
     flex-shrink: 0;
   }
-  .sym-wrap {
-    position: relative;
-    display: flex;
-    align-items: center;
-  }
+  .brand { font-size: 14px; font-weight: 700; color: #fff; letter-spacing: 0.5px; }
+  .analyst-name { font-size: 13px; color: #555; }
+  .sym-wrap { position: relative; display: flex; align-items: center; }
   #symbol {
-    background: #1a1a1a;
-    border: 1px solid #2a2a2a;
-    border-radius: 6px;
-    color: #fff;
-    font-size: 15px;
-    font-weight: 700;
-    letter-spacing: 0.5px;
-    outline: none;
-    padding: 5px 32px 5px 10px;
-    text-transform: uppercase;
-    transition: border-color 0.15s;
-    width: 130px;
+    background: #1a1a1a; border: 1px solid #2a2a2a; border-radius: 6px;
+    color: #fff; font-size: 15px; font-weight: 700; letter-spacing: 0.5px;
+    outline: none; padding: 5px 32px 5px 10px; text-transform: uppercase;
+    transition: border-color 0.15s; width: 130px;
   }
   #symbol:focus { border-color: #4a9eff; }
-  .sym-icon {
-    position: absolute;
-    right: 8px;
-    color: #444;
-    font-size: 11px;
-    pointer-events: none;
-  }
-
+  .sym-icon { position: absolute; right: 8px; color: #444; font-size: 11px; pointer-events: none; }
   .tf-group { display: flex; gap: 3px; }
   .tf-btn {
-    background: #1a1a1a;
-    border: 1px solid #222;
-    border-radius: 4px;
-    color: #666;
-    cursor: pointer;
-    font-size: 11px;
-    font-weight: 600;
-    padding: 4px 8px;
-    transition: all 0.12s;
+    background: #1a1a1a; border: 1px solid #222; border-radius: 4px;
+    color: #666; cursor: pointer; font-size: 11px; font-weight: 600;
+    padding: 4px 8px; transition: all 0.12s;
   }
   .tf-btn:hover { border-color: #444; color: #bbb; }
   .tf-btn.active { background: #1a2a3a; border-color: #4a9eff; color: #4a9eff; }
-
-  .live-price {
-    margin-left: 8px;
-    font-size: 15px;
-    font-weight: 700;
-    color: #fff;
-    min-width: 110px;
-  }
+  .live-price { margin-left: 8px; font-size: 15px; font-weight: 700; color: #fff; min-width: 110px; }
   .price-change { font-size: 11px; margin-left: 4px; }
-  .price-up { color: #5fdb5f; }
-  .price-down { color: #e05050; }
-
+  .price-up { color: #5fdb5f; } .price-down { color: #e05050; }
   .bar-spacer { flex: 1; }
-
   .screenshot-btn {
-    background: #1a1a1a;
-    border: 1px solid #2a2a2a;
-    border-radius: 5px;
-    color: #888;
-    cursor: pointer;
-    font-size: 12px;
-    padding: 5px 10px;
-    transition: all 0.12s;
+    background: #1a1a1a; border: 1px solid #2a2a2a; border-radius: 5px;
+    color: #888; cursor: pointer; font-size: 12px; padding: 5px 10px; transition: all 0.12s;
   }
   .screenshot-btn:hover { border-color: #4a7a4a; color: #5fdb5f; }
   .screenshot-btn.has-shot { border-color: #2a5a2a; color: #5fdb5f; background: #0d1f0d; }
-
   .btn-sm {
-    background: #1a1a1a;
-    border: 1px solid #2a2a2a;
-    border-radius: 5px;
-    color: #888;
-    cursor: pointer;
-    font-size: 12px;
-    padding: 5px 10px;
-    text-decoration: none;
-    transition: border-color 0.15s;
+    background: #1a1a1a; border: 1px solid #2a2a2a; border-radius: 5px;
+    color: #888; cursor: pointer; font-size: 12px; padding: 5px 10px;
+    text-decoration: none; transition: border-color 0.15s;
   }
   .btn-sm:hover { border-color: #555; color: #fff; }
 
-  /* ── Main layout ── */
-  .main {
-    display: flex;
-    flex: 1;
-    overflow: hidden;
-  }
-
-  /* Chart panel */
-  .chart-panel {
-    flex: 0 0 65%;
-    display: flex;
-    flex-direction: column;
-    border-right: 1px solid #1a1a1a;
-  }
+  /* ── Main ── */
+  .main { display: flex; flex: 1; overflow: hidden; }
+  .chart-panel { flex: 0 0 65%; display: flex; flex-direction: column; border-right: 1px solid #1a1a1a; }
   #tv_chart { flex: 1; }
+  .right-panel { flex: 0 0 35%; display: flex; flex-direction: column; overflow-y: auto; }
 
-  /* Right panel */
-  .right-panel {
-    flex: 0 0 35%;
-    display: flex;
-    flex-direction: column;
-    overflow-y: auto;
+  /* ── Right panel tabs ── */
+  .rpanel-tabs { display: flex; border-bottom: 1px solid #1a1a1a; flex-shrink: 0; }
+  .rptab {
+    flex: 1; padding: 8px; font-size: 11px; font-weight: 600; text-align: center;
+    color: #444; cursor: pointer; border-bottom: 2px solid transparent;
+    text-transform: uppercase; letter-spacing: 0.5px; transition: all 0.12s;
   }
+  .rptab:hover { color: #888; }
+  .rptab.active { color: #4a9eff; border-color: #4a9eff; }
+  .rpanel-view { display: none; overflow-y: auto; flex: 1; }
+  .rpanel-view.active { display: flex; flex-direction: column; }
 
   /* ── Trade ticket ── */
-  .ticket {
-    padding: 13px 14px;
-    border-bottom: 1px solid #1a1a1a;
-    flex-shrink: 0;
-  }
-  .section-title {
-    font-size: 10px;
-    text-transform: uppercase;
-    color: #444;
-    letter-spacing: 0.8px;
-    margin-bottom: 10px;
-  }
-
+  .ticket { padding: 12px 14px; }
+  .section-title { font-size: 10px; text-transform: uppercase; color: #444; letter-spacing: 0.8px; margin-bottom: 8px; }
   .field-row { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-bottom: 8px; }
   .field-row.full { grid-template-columns: 1fr; }
-
-  label.fl {
-    display: block;
-    font-size: 10px;
-    color: #555;
-    margin-bottom: 3px;
-    text-transform: uppercase;
-    letter-spacing: 0.4px;
-  }
+  label.fl { display: block; font-size: 10px; color: #555; margin-bottom: 3px; text-transform: uppercase; letter-spacing: 0.4px; }
   .fi {
-    width: 100%;
-    background: #0f0f0f;
-    border: 1px solid #222;
-    border-radius: 5px;
-    color: #e0e0e0;
-    font-size: 13px;
-    padding: 7px 9px;
-    outline: none;
-    transition: border-color 0.15s;
+    width: 100%; background: #0f0f0f; border: 1px solid #222; border-radius: 5px;
+    color: #e0e0e0; font-size: 13px; padding: 7px 9px; outline: none; transition: border-color 0.15s;
   }
   .fi:focus { border-color: #4a9eff; }
   select.fi { cursor: pointer; }
 
+  /* Trade type */
+  .trade-type-row { display: flex; gap: 5px; margin-bottom: 10px; }
+  .type-btn {
+    flex: 1; background: #0f0f0f; border: 1px solid #222; border-radius: 4px;
+    color: #444; cursor: pointer; font-size: 11px; font-weight: 600;
+    padding: 6px 4px; text-align: center; transition: all 0.12s;
+  }
+  .type-btn:hover { border-color: #444; color: #aaa; }
+  .type-btn.active { background: #0e1e30; border-color: #4a9eff; color: #4a9eff; }
+
   /* Direction */
   .dir-row { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-bottom: 10px; }
   .dir-btn {
-    border: 2px solid #1e1e1e;
-    border-radius: 6px;
-    cursor: pointer;
-    font-size: 13px;
-    font-weight: 700;
-    padding: 9px;
-    text-align: center;
-    transition: all 0.12s;
-    background: #0d0d0d;
-    color: #333;
-    letter-spacing: 0.5px;
+    border: 2px solid #1e1e1e; border-radius: 6px; cursor: pointer;
+    font-size: 13px; font-weight: 700; padding: 9px; text-align: center;
+    transition: all 0.12s; background: #0d0d0d; color: #333; letter-spacing: 0.5px;
   }
   .dir-btn.long-idle { border-color: #1a3a1a; color: #2a6a2a; }
   .dir-btn.long-idle:hover { border-color: #2a5a2a; color: #4aaa4a; }
@@ -209,80 +117,77 @@
   .dir-btn.short-idle:hover { border-color: #5a2a2a; color: #aa4a4a; }
   .dir-btn.short-active { background: #1f0d0d; border-color: #aa3a3a; color: #db5f5f; }
 
-  /* Entry toggle */
+  /* Entry */
   .entry-toggle { display: flex; gap: 5px; margin-bottom: 6px; }
   .tgl {
-    background: #0f0f0f;
-    border: 1px solid #222;
-    border-radius: 4px;
-    color: #555;
-    cursor: pointer;
-    font-size: 11px;
-    padding: 4px 10px;
-    transition: all 0.12s;
+    background: #0f0f0f; border: 1px solid #222; border-radius: 4px;
+    color: #555; cursor: pointer; font-size: 11px; padding: 4px 10px; transition: all 0.12s;
   }
   .tgl.active { border-color: #4a9eff; color: #4a9eff; background: #081422; }
 
-  /* TP rows */
+  /* SL Hard/Soft */
+  .sl-wrap { margin-bottom: 8px; }
+  .sl-row { display: flex; align-items: center; gap: 8px; margin-bottom: 4px; }
+  .sl-row .fi { flex: 1; }
+  .sl-type-toggle { display: flex; gap: 4px; }
+  .sl-tgl {
+    background: #0f0f0f; border: 1px solid #222; border-radius: 3px;
+    color: #555; cursor: pointer; font-size: 10px; font-weight: 600;
+    padding: 3px 8px; transition: all 0.12s; text-transform: uppercase;
+  }
+  .sl-tgl:hover { border-color: #444; color: #aaa; }
+  .sl-tgl.active-hard { border-color: #cc4444; color: #e05050; background: #1f0a0a; }
+  .sl-tgl.active-soft { border-color: #aaaa22; color: #dddd44; background: #1a1a00; }
+  .sl-tf-row { display: flex; align-items: center; gap: 5px; padding: 3px 0 5px 0; }
+  .sl-tf-row label { font-size: 10px; color: #555; }
+  .sl-tf-row select { background: #0f0f0f; border: 1px solid #222; border-radius: 4px; color: #aaa; font-size: 11px; padding: 3px 7px; outline: none; }
+
+  /* TPs */
   .tp-rows { margin-bottom: 6px; }
   .tp-row { display: flex; align-items: center; gap: 6px; margin-bottom: 5px; }
   .tp-row .fi { flex: 1; }
   .tp-label { font-size: 10px; color: #444; width: 28px; flex-shrink: 0; text-align: right; }
-  .rm-tp {
-    background: none; border: none; color: #333;
-    cursor: pointer; font-size: 15px; padding: 1px 4px;
-  }
+  .rm-tp { background: none; border: none; color: #333; cursor: pointer; font-size: 15px; padding: 1px 4px; }
   .rm-tp:hover { color: #e05050; }
   .add-tp {
-    background: none;
-    border: 1px dashed #282828;
-    border-radius: 4px;
-    color: #444;
-    cursor: pointer;
-    font-size: 11px;
-    padding: 4px 0;
-    width: 100%;
-    margin-bottom: 8px;
-    transition: all 0.12s;
+    background: none; border: 1px dashed #282828; border-radius: 4px;
+    color: #444; cursor: pointer; font-size: 11px; padding: 4px 0; width: 100%;
+    margin-bottom: 8px; transition: all 0.12s;
   }
   .add-tp:hover { border-color: #444; color: #777; }
 
-  /* Chart thumbnail */
-  .chart-thumb {
-    border: 1px solid #2a2a2a;
-    border-radius: 5px;
-    display: none;
-    margin-bottom: 8px;
-    overflow: hidden;
-    position: relative;
-  }
+  /* DCA */
+  .dca-toggle-row { display: flex; align-items: center; justify-content: space-between; margin-bottom: 6px; }
+  .link-btn { background: none; border: none; color: #555; cursor: pointer; font-size: 11px; transition: color 0.12s; }
+  .link-btn:hover { color: #4a9eff; }
+  .link-btn.active-link { color: #4a9eff; }
+  .dca-section { background: #0a0a14; border: 1px solid #1a1a2a; border-radius: 5px; padding: 10px; margin-bottom: 8px; }
+  .dca-row { display: flex; align-items: center; gap: 5px; margin-bottom: 5px; }
+  .dca-row .fi { flex: 2; font-size: 12px; padding: 5px 7px; }
+  .dca-alloc { flex: 1 !important; }
+  .dca-label { font-size: 10px; color: #555; width: 20px; flex-shrink: 0; }
+  .dca-pct-label { font-size: 10px; color: #333; }
+  .dca-sum { font-size: 10px; text-align: right; color: #555; margin-top: 2px; }
+  .dca-sum.ok { color: #5fdb5f; } .dca-sum.warn { color: #e05050; }
+
+  /* Chart thumb */
+  .chart-thumb { border: 1px solid #2a2a2a; border-radius: 5px; display: none; margin-bottom: 8px; overflow: hidden; position: relative; }
   .chart-thumb img { display: block; width: 100%; max-height: 90px; object-fit: cover; }
-  .clear-shot {
-    position: absolute; top: 4px; right: 4px;
-    background: rgba(0,0,0,0.75); border: none;
-    border-radius: 3px; color: #aaa; cursor: pointer;
-    font-size: 10px; padding: 2px 6px;
-  }
+  .clear-shot { position: absolute; top: 4px; right: 4px; background: rgba(0,0,0,.75); border: none; border-radius: 3px; color: #aaa; cursor: pointer; font-size: 10px; padding: 2px 6px; }
 
   /* Notes */
   .notes-toggle { font-size: 11px; color: #444; cursor: pointer; margin-bottom: 6px; user-select: none; }
   .notes-toggle:hover { color: #777; }
   .textarea { height: 52px; resize: none; }
 
-  /* FIRE button */
+  /* Sanity warning */
+  .sanity-warn { background: #1a1000; border: 1px solid #665500; border-radius: 4px; color: #ffcc44; font-size: 11px; padding: 5px 8px; margin-bottom: 6px; display: none; }
+
+  /* FIRE */
   #fire-btn {
-    border: 2px solid #1e1e1e;
-    border-radius: 7px;
-    cursor: pointer;
-    font-size: 15px;
-    font-weight: 800;
-    letter-spacing: 1.5px;
-    padding: 13px;
-    transition: all 0.12s;
-    width: 100%;
-    background: #0d0d0d;
-    color: #2a2a2a;
-    margin-top: 4px;
+    border: 2px solid #1e1e1e; border-radius: 7px; cursor: pointer;
+    font-size: 15px; font-weight: 800; letter-spacing: 1.5px; padding: 13px;
+    transition: all 0.12s; width: 100%; background: #0d0d0d; color: #2a2a2a; margin-top: 4px;
   }
   #fire-btn.ready-long { background: #0d1f0d; border-color: #3aaa3a; color: #5fdb5f; }
   #fire-btn.ready-short { background: #1f0d0d; border-color: #aa3a3a; color: #db5f5f; }
@@ -291,221 +196,406 @@
   #fire-btn:disabled { opacity: 0.45; cursor: not-allowed; }
   #fire-btn.flash-ok { background: #1a5a1a !important; border-color: #5fdb5f !important; color: #fff !important; }
   #fire-btn.flash-err { background: #5a1a1a !important; border-color: #db5f5f !important; color: #fff !important; }
-
   .fire-result { font-size: 11px; margin-top: 5px; min-height: 16px; text-align: center; }
-  .fire-result.ok { color: #5fdb5f; }
-  .fire-result.err { color: #e05050; }
-
+  .fire-result.ok { color: #5fdb5f; } .fire-result.err { color: #e05050; }
   .dry-run-row { display: flex; align-items: center; gap: 6px; margin-top: 7px; font-size: 11px; color: #444; }
   .dry-run-row input { cursor: pointer; accent-color: #4a9eff; }
 
-  /* Sub panels */
+  /* ── Sub panels / tables ── */
   .sub-panel { padding: 11px 14px; border-bottom: 1px solid #141414; }
   .sub-panel table { width: 100%; border-collapse: collapse; font-size: 11px; }
   .sub-panel th { color: #444; font-size: 10px; font-weight: 600; padding: 3px 0; text-align: left; text-transform: uppercase; }
-  .sub-panel td { color: #bbb; padding: 4px 0; border-bottom: 1px solid #141414; }
-  .long-text { color: #5fdb5f; }
-  .short-text { color: #db5f5f; }
+  .sub-panel td { color: #bbb; padding: 4px 0; border-bottom: 1px solid #0d0d0d; vertical-align: top; }
+  .long-text { color: #5fdb5f; } .short-text { color: #db5f5f; }
   .empty-msg { color: #333; font-size: 11px; font-style: italic; }
-  .ok-dot { color: #5fdb5f; }
-  .err-dot { color: #555; }
+  .ok-dot { color: #5fdb5f; } .err-dot { color: #555; }
+  .mgmt-btn {
+    background: #1a1a1a; border: 1px solid #222; border-radius: 3px;
+    color: #666; cursor: pointer; font-size: 10px; padding: 2px 5px;
+    margin: 1px; transition: all 0.12s;
+  }
+  .mgmt-btn:hover { border-color: #555; color: #ccc; }
+  .mgmt-btn.danger:hover { border-color: #aa3333; color: #e05050; }
+
+  /* ── Modals ── */
+  .modal-overlay {
+    position: fixed; inset: 0; background: rgba(0,0,0,.78);
+    display: none; align-items: center; justify-content: center; z-index: 1000;
+  }
+  .modal-overlay.open { display: flex; }
+  .modal {
+    background: #131313; border: 1px solid #252525; border-radius: 10px;
+    padding: 22px; width: 440px; max-width: 95vw; max-height: 90vh; overflow-y: auto;
+  }
+  .modal h3 { font-size: 14px; font-weight: 700; color: #fff; margin-bottom: 16px; }
+  .modal .fi { margin-bottom: 8px; }
+  .modal-footer { display: flex; gap: 8px; margin-top: 14px; justify-content: flex-end; }
+  .modal-btn {
+    background: #1a1a1a; border: 1px solid #2a2a2a; border-radius: 5px;
+    color: #bbb; cursor: pointer; font-size: 13px; padding: 8px 18px; transition: all 0.12s;
+  }
+  .modal-btn:hover { border-color: #555; color: #fff; }
+  .modal-btn.primary { background: #0d2a0d; border-color: #3aaa3a; color: #5fdb5f; }
+  .modal-btn.primary:hover { background: #102e10; border-color: #5fdb5f; }
+  .modal-btn.danger { background: #2a0d0d; border-color: #aa3a3a; color: #db5f5f; }
+  .preview-card {
+    background: #0a0a0a; border: 1px solid #1e1e1e; border-radius: 7px;
+    padding: 14px; margin-bottom: 14px; font-family: monospace; font-size: 13px;
+    line-height: 1.7; color: #e0e0e0; white-space: pre-wrap;
+  }
+  .preview-actions { display: flex; flex-wrap: wrap; gap: 6px; margin-bottom: 12px; }
+  .preview-actions .modal-btn { font-size: 11px; padding: 5px 12px; }
+
+  /* Past trades */
+  .past-trade-row { cursor: pointer; }
+  .past-trade-row:hover td { background: #111; }
+  .close-badge {
+    font-size: 9px; font-weight: 700; padding: 2px 5px; border-radius: 3px;
+    text-transform: uppercase; letter-spacing: 0.3px;
+  }
+  .cb-profit { background: #0d2a0d; color: #5fdb5f; }
+  .cb-stopped,.cb-cut { background: #2a0d0d; color: #db5f5f; }
+  .cb-be { background: #1a1a1a; color: #888; }
+  .cb-invalidation { background: #1a0a1a; color: #aa66aa; }
+  .cb-partial { background: #0a1a2a; color: #4a9eff; }
 </style>
 </head>
 <body>
 
-<!-- ── Top / symbol bar (unified: controls both chart and ticket) ── -->
+<!-- ── Top bar ── -->
 <div class="symbol-bar">
   <span class="brand">ANALYST</span>
   <span class="analyst-name">{{ analyst.display_name }}</span>
-
   <div style="width:1px;height:20px;background:#222;margin:0 4px;"></div>
-
-  <!-- Single symbol input — drives both TradingView chart AND the trade ticket -->
   <div class="sym-wrap">
-    <input id="symbol" list="symbol-list" autocomplete="off"
-           placeholder="BTC-USDT" title="Symbol (updates chart + ticket)">
+    <input id="symbol" list="symbol-list" autocomplete="off" placeholder="BTC-USDT">
     <span class="sym-icon">▾</span>
     <datalist id="symbol-list"></datalist>
   </div>
-
   <div class="tf-group">
-    <button class="tf-btn active" data-tf="1">1m</button>
-    <button class="tf-btn" data-tf="5">5m</button>
-    <button class="tf-btn" data-tf="15">15m</button>
+    <button class="tf-btn" data-tf="1">1m</button>
+    <button class="tf-btn active" data-tf="15">15m</button>
     <button class="tf-btn" data-tf="60">1h</button>
     <button class="tf-btn" data-tf="240">4h</button>
     <button class="tf-btn" data-tf="D">1D</button>
     <button class="tf-btn" data-tf="W">1W</button>
   </div>
-
   <div class="live-price">
     <span id="live-price">—</span>
     <span class="price-change" id="price-change"></span>
   </div>
-
   <div class="bar-spacer"></div>
-
   <button class="screenshot-btn" id="shot-btn" onclick="takeScreenshot()">📸 Screenshot</button>
   <a href="/settings" class="btn-sm">Settings</a>
   <a href="/logout" class="btn-sm">Sign Out</a>
 </div>
 
-<!-- ── Main layout ── -->
 <div class="main">
+  <div class="chart-panel"><div id="tv_chart"></div></div>
 
-  <!-- Chart -->
-  <div class="chart-panel">
-    <div id="tv_chart"></div>
-  </div>
-
-  <!-- Right panel -->
   <div class="right-panel">
-    <div class="ticket">
-      <div class="section-title">Trade Ticket</div>
+    <!-- Tab row -->
+    <div class="rpanel-tabs">
+      <div class="rptab active" onclick="showTab('trade')">Trade</div>
+      <div class="rptab" onclick="showTab('positions')">Positions</div>
+      <div class="rptab" onclick="showTab('history')">History</div>
+      <div class="rptab" onclick="showTab('past')">Past Trades</div>
+    </div>
 
-      <!-- Exchange -->
-      <div class="field-row full" style="margin-bottom:10px;">
-        <div>
-          <label class="fl">Exchange</label>
-          <select id="exchange" class="fi" onchange="onExchangeChange()">
-            {% for ex in exchanges %}
-            <option value="{{ ex }}" {% if ex == analyst.default_exchange %}selected{% endif %}>
-              {{ exchange_labels[ex] }}
-            </option>
-            {% endfor %}
-            {% if not exchanges %}
-            <option value="" disabled>No exchanges — go to Settings</option>
-            {% endif %}
-          </select>
+    <!-- ── TRADE TAB ── -->
+    <div class="rpanel-view active" id="tab-trade">
+      <div class="ticket">
+
+        <!-- Exchange -->
+        <div class="field-row full" style="margin-bottom:8px;">
+          <div>
+            <label class="fl">Exchange</label>
+            <select id="exchange" class="fi" onchange="onExchangeChange()">
+              {% for ex in exchanges %}
+              <option value="{{ ex }}" {% if ex == analyst.default_exchange %}selected{% endif %}>{{ exchange_labels[ex] }}</option>
+              {% endfor %}
+              {% if not exchanges %}
+              <option value="" disabled>No exchanges — go to Settings</option>
+              {% endif %}
+            </select>
+          </div>
         </div>
-      </div>
 
-      <!-- Direction -->
-      <div class="dir-row">
-        <div class="dir-btn long-idle" id="btn-long" onclick="setDir('long')">▲ LONG</div>
-        <div class="dir-btn short-idle" id="btn-short" onclick="setDir('short')">▼ SHORT</div>
-      </div>
-
-      <!-- Entry -->
-      <div style="margin-bottom:8px;">
-        <label class="fl">Entry</label>
-        <div class="entry-toggle">
-          <span class="tgl active" id="tgl-market" onclick="setEntryMode('market')">Market (CMP)</span>
-          <span class="tgl" id="tgl-limit" onclick="setEntryMode('limit')">Limit</span>
+        <!-- Trade type -->
+        <div class="trade-type-row">
+          <button class="type-btn active" data-type="leverage" onclick="setTradeType('leverage')">Leverage</button>
+          <button class="type-btn" data-type="spot" onclick="setTradeType('spot')">Spot</button>
+          <button class="type-btn" data-type="stock" onclick="setTradeType('stock')">Stock</button>
         </div>
-        <input id="entry-price" class="fi" type="number" step="any"
-               placeholder="Limit price" style="display:none;">
-      </div>
 
-      <!-- SL -->
-      <div class="field-row full" style="margin-bottom:8px;">
-        <div>
+        <!-- Direction -->
+        <div class="dir-row">
+          <div class="dir-btn long-idle" id="btn-long" onclick="setDir('long')">▲ LONG</div>
+          <div class="dir-btn short-idle" id="btn-short" onclick="setDir('short')">▼ SHORT</div>
+        </div>
+
+        <!-- Entry -->
+        <div style="margin-bottom:8px;">
+          <label class="fl">Entry</label>
+          <div class="entry-toggle">
+            <span class="tgl active" id="tgl-market" onclick="setEntryMode('market')">Market (CMP)</span>
+            <span class="tgl" id="tgl-limit" onclick="setEntryMode('limit')">Limit</span>
+          </div>
+          <input id="entry-price" class="fi" placeholder="Price  (95k, 95000, cmp)" style="display:none;">
+        </div>
+
+        <!-- SL Hard/Soft -->
+        <div class="sl-wrap">
           <label class="fl">Stop Loss</label>
-          <input id="sl" class="fi" type="number" step="any" placeholder="SL price">
+          <div class="sl-row">
+            <input id="sl" class="fi" placeholder="SL price  (92k, 92000)">
+            <div class="sl-type-toggle">
+              <span class="sl-tgl active-hard" id="sl-hard" onclick="setSlType('hard')" title="Hard stop — stop loss order on exchange">Hard</span>
+              <span class="sl-tgl" id="sl-soft" onclick="setSlType('soft')" title="Soft stop — invalidated on candle close">Soft</span>
+            </div>
+          </div>
+          <div class="sl-tf-row" id="sl-tf-row" style="display:none;">
+            <label>Invalidated on</label>
+            <select id="sl-tf">
+              <option value="1m">1m</option><option value="5m">5m</option>
+              <option value="15m" selected>15m</option><option value="30m">30m</option>
+              <option value="1h">1h</option><option value="4h">4h</option>
+              <option value="1D">Daily</option><option value="1W">Weekly</option>
+            </select>
+            <label>candle close</label>
+          </div>
         </div>
-      </div>
 
-      <!-- TPs -->
-      <label class="fl">Take Profit</label>
-      <div class="tp-rows" id="tp-rows">
-        <div class="tp-row">
-          <span class="tp-label">TP 1</span>
-          <input class="fi tp-input" type="number" step="any" placeholder="TP price">
+        <!-- TPs -->
+        <label class="fl">Take Profit</label>
+        <div class="tp-rows" id="tp-rows">
+          <div class="tp-row">
+            <span class="tp-label">TP 1</span>
+            <input class="fi tp-input" placeholder="TP price  (100k)">
+          </div>
         </div>
-      </div>
-      <button class="add-tp" id="add-tp-btn" onclick="addTP()">+ Add TP level</button>
+        <button class="add-tp" id="add-tp-btn" onclick="addTP()">+ Add TP level</button>
 
-      <!-- Risk / Leverage -->
-      <div class="field-row">
-        <div>
-          <label class="fl">Risk %</label>
-          <input id="risk-pct" class="fi" type="number" step="0.1" min="0.1" max="10"
-                 value="{{ (analyst.default_risk_pct * 100) | round(1) }}">
+        <!-- Risk / Leverage -->
+        <div class="field-row">
+          <div>
+            <label class="fl">Risk %</label>
+            <input id="risk-pct" class="fi" type="number" step="0.1" min="0.1" max="10"
+                   value="{{ (analyst.default_risk_pct * 100) | round(1) }}">
+          </div>
+          <div>
+            <label class="fl">Leverage</label>
+            <input id="leverage" class="fi" type="number" step="1" min="1" max="200"
+                   value="{{ analyst.default_leverage }}">
+          </div>
         </div>
-        <div>
-          <label class="fl">Leverage</label>
-          <input id="leverage" class="fi" type="number" step="1" min="1" max="200"
-                 value="{{ analyst.default_leverage }}">
+
+        <!-- DCA section -->
+        <div class="dca-toggle-row">
+          <label class="fl" style="margin:0;">Entries (DCA)</label>
+          <button class="link-btn" id="dca-toggle-btn" onclick="toggleDCA()">+ Add DCA</button>
         </div>
-      </div>
+        <div id="dca-section" class="dca-section" style="display:none;">
+          <div id="dca-rows">
+            <div class="dca-row" data-dca="0">
+              <span class="dca-label">1</span>
+              <input class="fi dca-price" placeholder="Price" oninput="updateDCASums()">
+              <input class="fi dca-alloc" placeholder="%" oninput="updateDCASums()" type="number" min="0" max="100">
+              <span class="dca-pct-label">%</span>
+            </div>
+          </div>
+          <div style="display:flex;justify-content:space-between;align-items:center;margin-top:4px;">
+            <button class="link-btn" onclick="addDCARow()">+ row</button>
+            <div class="dca-sum" id="dca-sum">0 / 100%</div>
+          </div>
+        </div>
 
-      <!-- Chart thumbnail -->
-      <div class="chart-thumb" id="chart-thumb">
-        <img id="chart-thumb-img" src="" alt="chart">
-        <button class="clear-shot" onclick="clearScreenshot()">✕ clear</button>
-      </div>
+        <!-- Chart thumbnail -->
+        <div class="chart-thumb" id="chart-thumb">
+          <img id="chart-thumb-img" src="" alt="chart">
+          <button class="clear-shot" onclick="clearScreenshot()">✕ clear</button>
+        </div>
 
-      <!-- Notes -->
-      <div class="notes-toggle" id="notes-toggle" onclick="toggleNotes()">+ Add notes</div>
-      <div id="notes-wrap" style="display:none;">
-        <textarea id="notes" class="fi textarea" placeholder="e.g. 15m structure break, scalp..."></textarea>
-      </div>
+        <!-- Notes -->
+        <div class="notes-toggle" id="notes-toggle" onclick="toggleNotes()">+ Add notes</div>
+        <div id="notes-wrap" style="display:none;">
+          <textarea id="notes" class="fi textarea" placeholder="e.g. 15m structure break, scalp…"></textarea>
+        </div>
 
-      <!-- FIRE -->
-      <button id="fire-btn" onclick="fire()">FIRE</button>
-      <div class="fire-result" id="fire-result"></div>
+        <!-- Sanity warning -->
+        <div class="sanity-warn" id="sanity-warn">⚠ Entry is more than 20% off current market price</div>
 
-      <div class="dry-run-row">
-        <input type="checkbox" id="dry-run">
-        <label for="dry-run">Dry run — post Discord only, no exchange order</label>
+        <!-- FIRE -->
+        <button id="fire-btn" onclick="openPreview()">FIRE</button>
+        <div class="fire-result" id="fire-result"></div>
+
+        <div class="dry-run-row">
+          <input type="checkbox" id="dry-run">
+          <label for="dry-run">Dry run — Discord only, no exchange order</label>
+        </div>
       </div>
     </div>
 
-    <!-- Open positions -->
-    <div class="sub-panel">
-      <div class="section-title">Open Positions</div>
-      <table>
-        <thead><tr><th>Symbol</th><th>Side</th><th>Entry</th><th>SL</th><th>Exch</th></tr></thead>
-        <tbody id="positions-body">
-          <tr><td colspan="5" class="empty-msg">No open positions</td></tr>
-        </tbody>
-      </table>
+    <!-- ── POSITIONS TAB ── -->
+    <div class="rpanel-view" id="tab-positions">
+      <div class="sub-panel" style="flex:1;">
+        <div class="section-title" style="margin-bottom:8px;">Open Positions
+          <button class="link-btn" style="float:right;" onclick="refreshPositions()">↻</button>
+        </div>
+        <div id="positions-list"></div>
+      </div>
     </div>
 
-    <!-- Signal history -->
-    <div class="sub-panel">
-      <div class="section-title">Signal History</div>
-      <table>
-        <thead><tr><th>Time</th><th>Symbol</th><th>Side</th><th>Exch</th><th>Discord</th></tr></thead>
-        <tbody id="signals-body">
-          <tr><td colspan="5" class="empty-msg">No signals yet</td></tr>
-        </tbody>
-      </table>
+    <!-- ── HISTORY TAB ── -->
+    <div class="rpanel-view" id="tab-history">
+      <div class="sub-panel" style="flex:1;">
+        <div class="section-title" style="margin-bottom:8px;">Signal History</div>
+        <table>
+          <thead><tr><th>Time</th><th>Symbol</th><th>Side</th><th>Exch</th><th>Discord</th></tr></thead>
+          <tbody id="signals-body">
+            <tr><td colspan="5" class="empty-msg">No signals yet</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- ── PAST TRADES TAB ── -->
+    <div class="rpanel-view" id="tab-past">
+      <div class="sub-panel" style="flex:1;">
+        <div class="section-title" style="margin-bottom:8px;">Past Trades
+          <button class="link-btn" style="float:right;" onclick="refreshPastTrades()">↻</button>
+        </div>
+        <table>
+          <thead><tr><th>Symbol</th><th>Side</th><th>Close Type</th><th>Entry→Close</th><th></th></tr></thead>
+          <tbody id="past-body">
+            <tr><td colspan="5" class="empty-msg">No closed trades yet</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+  </div><!-- right-panel -->
+</div><!-- main -->
+
+
+<!-- ── PREVIEW MODAL ── -->
+<div class="modal-overlay" id="preview-modal">
+  <div class="modal">
+    <h3>Preview Signal</h3>
+    <div class="preview-card" id="preview-text"></div>
+    <div class="preview-actions">
+      <button class="modal-btn" onclick="closeModal('preview-modal')">✎ Edit</button>
+    </div>
+    <div class="modal-footer">
+      <button class="modal-btn" onclick="closeModal('preview-modal')">Cancel</button>
+      <button class="modal-btn primary" onclick="confirmFire()">Send Signal ▶</button>
+    </div>
+  </div>
+</div>
+
+<!-- ── MANAGEMENT MODAL ── -->
+<div class="modal-overlay" id="mgmt-modal">
+  <div class="modal" id="mgmt-modal-body">
+    <!-- filled dynamically -->
+  </div>
+</div>
+
+<!-- ── EDIT CLOSE MODAL ── -->
+<div class="modal-overlay" id="edit-close-modal">
+  <div class="modal">
+    <h3>Edit Closed Trade</h3>
+    <input type="hidden" id="ec-pos-id">
+    <label class="fl">Close Price</label>
+    <input id="ec-price" class="fi" placeholder="Close price">
+    <label class="fl">Close Type</label>
+    <select id="ec-type" class="fi">
+      <option value="profit">Profit</option>
+      <option value="stopped">Stopped Out</option>
+      <option value="cut">Cut Early</option>
+      <option value="be">Breakeven</option>
+      <option value="invalidation">Invalidation</option>
+      <option value="partial">Partial</option>
+    </select>
+    <label class="fl">Notes</label>
+    <textarea id="ec-notes" class="fi textarea" placeholder="Optional notes…"></textarea>
+    <div class="modal-footer">
+      <button class="modal-btn" onclick="closeModal('edit-close-modal')">Cancel</button>
+      <button class="modal-btn primary" onclick="submitEditClose()">Save</button>
     </div>
   </div>
 </div>
 
 <script src="https://s3.tradingview.com/tv.js"></script>
 <script>
-// ── State ────────────────────────────────────────────────────────────────
+// ═══════════════════════════════════════════════════════════
+// State
+// ═══════════════════════════════════════════════════════════
 let tvWidget = null;
-let currentTF = '1';
+let currentTF = '15';
 let currentDir = null;
+let currentTradeType = 'leverage';
 let entryMode = 'market';
+let slType = 'hard';
+let dcaEnabled = false;
 let screenshotB64 = null;
 let priceInterval = null;
 let lastPrice = null;
-let symbolChangeTimeout = null;
+let symChangeTimer = null;
 
-// ── TradingView ──────────────────────────────────────────────────────────
+// ═══════════════════════════════════════════════════════════
+// Price abbreviation parser
+// "78k" → 78000, "1.5m" → 1500000, "cmp" → null (market)
+// ═══════════════════════════════════════════════════════════
+function parsePrice(raw) {
+  if (!raw) return null;
+  const s = raw.toString().trim().toLowerCase();
+  if (s === 'cmp' || s === 'market') return 'cmp';
+  const m = s.match(/^([0-9]*\.?[0-9]+)\s*([kmb]?)$/);
+  if (!m) return null;
+  let n = parseFloat(m[1]);
+  if (m[2] === 'k') n *= 1000;
+  else if (m[2] === 'm') n *= 1_000_000;
+  else if (m[2] === 'b') n *= 1_000_000_000;
+  return isNaN(n) ? null : n;
+}
+
+function parseEntryField(id) {
+  const v = document.getElementById(id).value.trim();
+  return parsePrice(v);
+}
+
+// ═══════════════════════════════════════════════════════════
+// Tab management
+// ═══════════════════════════════════════════════════════════
+function showTab(name) {
+  document.querySelectorAll('.rpanel-view').forEach(v => v.classList.remove('active'));
+  document.querySelectorAll('.rptab').forEach(t => t.classList.remove('active'));
+  document.getElementById('tab-' + name).classList.add('active');
+  const tabs = ['trade','positions','history','past'];
+  const idx = tabs.indexOf(name);
+  document.querySelectorAll('.rptab')[idx].classList.add('active');
+  if (name === 'positions') refreshPositions();
+  if (name === 'history')   refreshSignals();
+  if (name === 'past')      refreshPastTrades();
+}
+
+// ═══════════════════════════════════════════════════════════
+// TradingView
+// ═══════════════════════════════════════════════════════════
 function tvSymbol(raw) {
-  // "BTC-USDT" or "BTC" → "BINANCE:BTCUSDT" for TradingView
-  const base = raw.replace('-USDT','').replace('/USDT','').replace(/USDT$/,'').toUpperCase();
+  const base = raw.replace('-USDT','').replace('/USDT','').replace(/USDT$/i,'').toUpperCase();
   return 'BINANCE:' + base + 'USDT';
 }
 
 function buildTV(symbol, interval) {
   if (tvWidget) {
-    try {
-      // If widget already exists, just change the symbol — much faster than rebuilding
-      tvWidget.setSymbol(tvSymbol(symbol), interval || currentTF, () => {});
-      return;
-    } catch(e) {}
+    try { tvWidget.setSymbol(tvSymbol(symbol), interval || currentTF, () => {}); return; }
+    catch(e) {}
   }
-  if (tvWidget) { try { tvWidget.remove(); } catch(e) {} }
+  try { if (tvWidget) tvWidget.remove(); } catch(e) {}
   tvWidget = new TradingView.widget({
     symbol: tvSymbol(symbol || 'BTC-USDT'),
-    interval: interval || '1',
+    interval: interval || currentTF,
     container_id: 'tv_chart',
     autosize: true,
     theme: 'dark',
@@ -513,26 +603,19 @@ function buildTV(symbol, interval) {
     locale: 'en',
     toolbar_bg: '#111111',
     enable_publishing: false,
-    hide_top_toolbar: false,
-    withdateranges: true,
-    allow_symbol_change: true,   // analysts can also change from within the chart
+    allow_symbol_change: true,
     save_image: true,
-    // When analyst is logged into TradingView, their saved layouts + published
-    // indicators (including invite-only scripts) load from their TV account.
   });
-
-  // Listen for symbol changes made from within the TV chart toolbar
   tvWidget.onChartReady(() => {
     tvWidget.activeChart().onSymbolChanged().subscribe(null, () => {
       try {
         const tvSym = tvWidget.activeChart().symbol();
-        // Convert "BINANCE:BTCUSDT" → "BTC-USDT"
-        const base = tvSym.replace(/.*:/, '').replace('USDT','');
-        const normalised = base + '-USDT';
-        const symInput = document.getElementById('symbol');
-        if (symInput.value.toUpperCase() !== normalised.toUpperCase()) {
-          symInput.value = normalised;
-          onSymbolInput(normalised, false); // update price, don't push back to TV
+        const base = tvSym.replace(/.*:/, '').replace(/USDT$/i,'');
+        const norm = base + '-USDT';
+        const inp = document.getElementById('symbol');
+        if (inp.value.toUpperCase() !== norm.toUpperCase()) {
+          inp.value = norm;
+          onSymbolInput(norm, false);
         }
       } catch(e) {}
     });
@@ -542,51 +625,43 @@ function buildTV(symbol, interval) {
 function setTF(tf) {
   currentTF = tf;
   document.querySelectorAll('.tf-btn').forEach(b => b.classList.toggle('active', b.dataset.tf === tf));
-  if (tvWidget) {
-    try { tvWidget.activeChart().setResolution(tf, () => {}); } catch(e) {}
-  }
+  if (tvWidget) { try { tvWidget.activeChart().setResolution(tf, () => {}); } catch(e) {} }
 }
 
-document.querySelectorAll('.tf-btn').forEach(btn => {
-  btn.addEventListener('click', () => setTF(btn.dataset.tf));
-});
+document.querySelectorAll('.tf-btn').forEach(b => b.addEventListener('click', () => setTF(b.dataset.tf)));
 
-// ── Symbol input — unified control for chart + ticket ────────────────────
+// ═══════════════════════════════════════════════════════════
+// Symbol input
+// ═══════════════════════════════════════════════════════════
 document.getElementById('symbol').addEventListener('input', function() {
-  clearTimeout(symbolChangeTimeout);
+  clearTimeout(symChangeTimer);
   const val = this.value.trim().toUpperCase();
-  // Debounce TV symbol change by 600ms so it doesn't thrash while typing
-  symbolChangeTimeout = setTimeout(() => onSymbolInput(val, true), 600);
+  symChangeTimer = setTimeout(() => onSymbolInput(val, true), 600);
 });
-
 document.getElementById('symbol').addEventListener('change', function() {
-  clearTimeout(symbolChangeTimeout);
-  const val = this.value.trim().toUpperCase();
-  onSymbolInput(val, true);
-  localStorage.setItem('lastSymbol', val);
+  clearTimeout(symChangeTimer);
+  onSymbolInput(this.value.trim().toUpperCase(), true);
+  localStorage.setItem('lastSymbol', this.value);
 });
 
 function onSymbolInput(val, updateTV) {
   if (!val) return;
-  // Normalise: accept BTC, BTCUSDT, BTC/USDT, BTC-USDT
   let sym = val.replace('/','').replace('-','');
-  if (!sym.endsWith('USDT')) sym = sym + 'USDT';
-  const display = sym.replace('USDT','-USDT'); // BTC-USDT
-
+  if (!sym.toUpperCase().endsWith('USDT')) sym = sym + 'USDT';
+  const display = sym.replace(/USDT$/i,'-USDT').toUpperCase();
   document.getElementById('symbol').value = display;
   startPricePolling();
-
   if (updateTV) {
     if (tvWidget) {
       try { tvWidget.setSymbol(tvSymbol(display), currentTF, () => {}); }
       catch(e) { buildTV(display, currentTF); }
-    } else {
-      buildTV(display, currentTF);
-    }
+    } else { buildTV(display, currentTF); }
   }
 }
 
-// ── Live price ────────────────────────────────────────────────────────────
+// ═══════════════════════════════════════════════════════════
+// Live price
+// ═══════════════════════════════════════════════════════════
 function startPricePolling() {
   if (priceInterval) clearInterval(priceInterval);
   fetchPrice();
@@ -600,19 +675,30 @@ function fetchPrice() {
   fetch(`/api/price/${encodeURIComponent(sym)}?exchange=${ex}`)
     .then(r => r.json())
     .then(d => {
-      if (!d.price || d.price <= 0) return;
-      const priceEl  = document.getElementById('live-price');
-      const changeEl = document.getElementById('price-change');
-      const fmt = p => '$' + Number(p).toLocaleString('en-US', {minimumFractionDigits: 2, maximumFractionDigits: 6});
+      if (!d.price) return;
+      const fmt = p => '$' + Number(p).toLocaleString('en-US',{minimumFractionDigits:2,maximumFractionDigits:6});
+      const priceEl = document.getElementById('live-price');
+      const chEl    = document.getElementById('price-change');
       if (lastPrice !== null && lastPrice !== d.price) {
         const up = d.price > lastPrice;
-        changeEl.textContent = up ? '▲' : '▼';
-        changeEl.className = 'price-change ' + (up ? 'price-up' : 'price-down');
-        setTimeout(() => { changeEl.textContent = ''; changeEl.className = 'price-change'; }, 1500);
+        chEl.textContent = up ? '▲' : '▼';
+        chEl.className = 'price-change ' + (up ? 'price-up' : 'price-down');
+        setTimeout(() => { chEl.textContent=''; chEl.className='price-change'; }, 1500);
       }
       priceEl.textContent = fmt(d.price);
       lastPrice = d.price;
+      checkPriceSanity();
     }).catch(() => {});
+}
+
+function checkPriceSanity() {
+  if (!lastPrice) return;
+  const rawEntry = document.getElementById('entry-price').value.trim();
+  if (entryMode !== 'limit' || !rawEntry) { document.getElementById('sanity-warn').style.display='none'; return; }
+  const ep = parsePrice(rawEntry);
+  if (!ep || ep === 'cmp') { document.getElementById('sanity-warn').style.display='none'; return; }
+  const pct = Math.abs(ep - lastPrice) / lastPrice;
+  document.getElementById('sanity-warn').style.display = pct > 0.2 ? 'block' : 'none';
 }
 
 function onExchangeChange() {
@@ -620,7 +706,6 @@ function onExchangeChange() {
   startPricePolling();
 }
 
-// ── Symbol autocomplete ───────────────────────────────────────────────────
 function fetchSymbols(exchange) {
   if (!exchange) return;
   fetch(`/api/symbols/${exchange}`)
@@ -631,56 +716,108 @@ function fetchSymbols(exchange) {
     }).catch(() => {});
 }
 
-// ── Direction ─────────────────────────────────────────────────────────────
+// ═══════════════════════════════════════════════════════════
+// Direction / trade type / entry / SL / TP
+// ═══════════════════════════════════════════════════════════
 function setDir(dir) {
   currentDir = dir;
-  const btnL = document.getElementById('btn-long');
-  const btnS = document.getElementById('btn-short');
-  btnL.className = 'dir-btn ' + (dir === 'long' ? 'long-active' : 'long-idle');
-  btnS.className = 'dir-btn ' + (dir === 'short' ? 'short-active' : 'short-idle');
-  const fireBtn = document.getElementById('fire-btn');
-  fireBtn.className = dir === 'long' ? 'ready-long' : 'ready-short';
-  fireBtn.textContent = dir === 'long' ? '▲  FIRE LONG' : '▼  FIRE SHORT';
+  document.getElementById('btn-long').className = 'dir-btn ' + (dir==='long' ? 'long-active' : 'long-idle');
+  document.getElementById('btn-short').className = 'dir-btn ' + (dir==='short' ? 'short-active' : 'short-idle');
+  const fb = document.getElementById('fire-btn');
+  fb.className = dir==='long' ? 'ready-long' : 'ready-short';
+  fb.textContent = dir==='long' ? '▲  FIRE LONG' : '▼  FIRE SHORT';
 }
 
-// ── Entry mode ────────────────────────────────────────────────────────────
+function setTradeType(t) {
+  currentTradeType = t;
+  document.querySelectorAll('.type-btn').forEach(b => b.classList.toggle('active', b.dataset.type === t));
+}
+
 function setEntryMode(mode) {
   entryMode = mode;
-  document.getElementById('tgl-market').classList.toggle('active', mode === 'market');
-  document.getElementById('tgl-limit').classList.toggle('active',  mode === 'limit');
-  document.getElementById('entry-price').style.display = mode === 'limit' ? 'block' : 'none';
+  document.getElementById('tgl-market').classList.toggle('active', mode==='market');
+  document.getElementById('tgl-limit').classList.toggle('active',  mode==='limit');
+  document.getElementById('entry-price').style.display = mode==='limit' ? 'block' : 'none';
 }
 
-// ── TPs ───────────────────────────────────────────────────────────────────
+function setSlType(t) {
+  slType = t;
+  document.getElementById('sl-hard').className = 'sl-tgl' + (t==='hard' ? ' active-hard' : '');
+  document.getElementById('sl-soft').className = 'sl-tgl' + (t==='soft' ? ' active-soft' : '');
+  document.getElementById('sl-tf-row').style.display = t==='soft' ? 'flex' : 'none';
+}
+
 function addTP() {
   const rows = document.getElementById('tp-rows');
   const n = rows.querySelectorAll('.tp-row').length;
   if (n >= 5) return;
-  const div = document.createElement('div');
-  div.className = 'tp-row';
+  const div = document.createElement('div'); div.className = 'tp-row';
   div.innerHTML = `<span class="tp-label">TP ${n+1}</span>
-    <input class="fi tp-input" type="number" step="any" placeholder="TP price">
+    <input class="fi tp-input" placeholder="TP price  (100k)">
     <button class="rm-tp" onclick="removeTP(this)">×</button>`;
   rows.appendChild(div);
-  if (n + 1 >= 5) document.getElementById('add-tp-btn').style.display = 'none';
+  if (n+1 >= 5) document.getElementById('add-tp-btn').style.display='none';
 }
 
 function removeTP(btn) {
   btn.closest('.tp-row').remove();
-  document.getElementById('add-tp-btn').style.display = 'block';
-  document.querySelectorAll('#tp-rows .tp-label').forEach((l,i) => { l.textContent = `TP ${i+1}`; });
+  document.getElementById('add-tp-btn').style.display='block';
+  document.querySelectorAll('#tp-rows .tp-label').forEach((l,i) => l.textContent=`TP ${i+1}`);
 }
 
-// ── Notes ─────────────────────────────────────────────────────────────────
 function toggleNotes() {
-  const wrap = document.getElementById('notes-wrap');
-  const tog  = document.getElementById('notes-toggle');
-  const open = wrap.style.display !== 'none';
-  wrap.style.display = open ? 'none' : 'block';
-  tog.textContent = open ? '+ Add notes' : '− Hide notes';
+  const w = document.getElementById('notes-wrap');
+  const t = document.getElementById('notes-toggle');
+  const open = w.style.display !== 'none';
+  w.style.display = open ? 'none' : 'block';
+  t.textContent = open ? '+ Add notes' : '− Hide notes';
 }
 
-// ── Screenshot ────────────────────────────────────────────────────────────
+// ═══════════════════════════════════════════════════════════
+// DCA
+// ═══════════════════════════════════════════════════════════
+function toggleDCA() {
+  dcaEnabled = !dcaEnabled;
+  document.getElementById('dca-section').style.display = dcaEnabled ? 'block' : 'none';
+  document.getElementById('dca-toggle-btn').textContent = dcaEnabled ? '− Remove DCA' : '+ Add DCA';
+  document.getElementById('dca-toggle-btn').classList.toggle('active-link', dcaEnabled);
+}
+
+function addDCARow() {
+  const rows = document.getElementById('dca-rows');
+  const n = rows.querySelectorAll('.dca-row').length;
+  if (n >= 4) return;
+  const div = document.createElement('div'); div.className = 'dca-row';
+  div.innerHTML = `<span class="dca-label">${n+1}</span>
+    <input class="fi dca-price" placeholder="Price" oninput="updateDCASums()">
+    <input class="fi dca-alloc" placeholder="%" oninput="updateDCASums()" type="number" min="0" max="100">
+    <span class="dca-pct-label">%</span>
+    <button class="rm-tp" onclick="this.closest('.dca-row').remove();updateDCASums()">×</button>`;
+  rows.appendChild(div);
+}
+
+function updateDCASums() {
+  const allocs = Array.from(document.querySelectorAll('.dca-alloc'))
+    .map(i => parseFloat(i.value) || 0);
+  const sum = allocs.reduce((a,b) => a+b, 0);
+  const el = document.getElementById('dca-sum');
+  el.textContent = `${sum} / 100%`;
+  el.className = 'dca-sum ' + (Math.abs(sum-100) < 0.01 ? 'ok' : (sum > 0 ? 'warn' : ''));
+}
+
+function collectDCAs() {
+  if (!dcaEnabled) return [];
+  return Array.from(document.querySelectorAll('.dca-row')).map((row, i) => {
+    const priceRaw = row.querySelector('.dca-price').value.trim();
+    const alloc    = parseFloat(row.querySelector('.dca-alloc').value) || 0;
+    const price    = parsePrice(priceRaw);
+    return { price: price === 'cmp' ? lastPrice : price, alloc };
+  }).filter(d => d.price);
+}
+
+// ═══════════════════════════════════════════════════════════
+// Screenshot
+// ═══════════════════════════════════════════════════════════
 function takeScreenshot() {
   if (!tvWidget) { alert('Chart not loaded yet.'); return; }
   try {
@@ -690,15 +827,13 @@ function takeScreenshot() {
       document.getElementById('chart-thumb').style.display = 'block';
       document.getElementById('shot-btn').classList.add('has-shot');
       document.getElementById('shot-btn').textContent = '✓ Screenshot';
-    }).catch(() => fallbackScreenshot());
+    }).catch(fallbackScreenshot);
   } catch(e) { fallbackScreenshot(); }
 }
 
 function fallbackScreenshot() {
-  // TradingView's own screenshot — opens a link in a new tab which the analyst
-  // can then paste into the Discord notes field manually.
   try { tvWidget.activeChart().executeActionById('takeScreenshot'); }
-  catch(e) { alert('Screenshot unavailable. Use the camera icon in the TradingView toolbar.'); }
+  catch(e) { alert('Use the camera icon in the TradingView toolbar.'); }
 }
 
 function clearScreenshot() {
@@ -709,93 +844,338 @@ function clearScreenshot() {
   document.getElementById('shot-btn').textContent = '📸 Screenshot';
 }
 
-// ── FIRE ──────────────────────────────────────────────────────────────────
-function fire() {
-  const btn      = document.getElementById('fire-btn');
-  const resultEl = document.getElementById('fire-result');
-  resultEl.textContent = '';
-
-  if (!currentDir) { flash('err', 'Select LONG or SHORT first'); return; }
-  const symbol = document.getElementById('symbol').value.trim();
-  if (!symbol) { flash('err', 'Enter a symbol'); return; }
-
+// ═══════════════════════════════════════════════════════════
+// Build ticket payload
+// ═══════════════════════════════════════════════════════════
+function buildTicket() {
+  const symbol   = document.getElementById('symbol').value.trim();
   const exchange = document.getElementById('exchange').value;
-  const sl       = parseFloat(document.getElementById('sl').value) || null;
-  const entry    = entryMode === 'limit' ? (parseFloat(document.getElementById('entry-price').value) || null) : null;
-  const tps      = Array.from(document.querySelectorAll('.tp-input'))
-                       .map(i => parseFloat(i.value)).filter(v => !isNaN(v) && v > 0);
-  const leverage = parseInt(document.getElementById('leverage').value)  || 75;
+  const rawEntry = document.getElementById('entry-price').value.trim();
+  const rawSL    = document.getElementById('sl').value.trim();
+
+  let entryVal = null;
+  let isMarket = entryMode === 'market';
+  if (!isMarket && rawEntry) {
+    const p = parsePrice(rawEntry);
+    if (p === 'cmp') { isMarket = true; }
+    else { entryVal = p; }
+  }
+
+  const slVal = parsePrice(rawSL);
+  const tps   = Array.from(document.querySelectorAll('.tp-input'))
+                  .map(i => parsePrice(i.value.trim())).filter(v => v && v !== 'cmp' && v > 0);
+  const dcas  = collectDCAs();
+  const notes = document.getElementById('notes').value.trim();
+  const leverage = parseInt(document.getElementById('leverage').value) || 75;
   const riskPct  = parseFloat(document.getElementById('risk-pct').value) / 100 || 0.01;
-  const notes    = document.getElementById('notes').value;
   const dryRun   = document.getElementById('dry-run').checked;
 
-  btn.disabled = true;
-  const origText = btn.textContent;
-  btn.textContent = '…';
+  return {
+    exchange, symbol, side: currentDir,
+    trade_type: currentTradeType,
+    sl_type: slType,
+    sl_tf: document.getElementById('sl-tf').value,
+    entry: isMarket ? null : entryVal,
+    is_market: isMarket,
+    sl: slVal === 'cmp' ? lastPrice : slVal,
+    tps, dcas, leverage, risk_pct: riskPct, notes,
+    chart_png_b64: screenshotB64 || '',
+    dry_run: dryRun,
+  };
+}
+
+// ═══════════════════════════════════════════════════════════
+// Preview → Confirm → Fire
+// ═══════════════════════════════════════════════════════════
+function openPreview() {
+  if (!currentDir) { flashResult('err','Select LONG or SHORT first'); return; }
+  const sym = document.getElementById('symbol').value.trim();
+  if (!sym) { flashResult('err','Enter a symbol'); return; }
+  const ticket = buildTicket();
+
+  // Build preview text client-side (mirrors discord_poster.format_signal)
+  const EM = '—';
+  const dir = ticket.side === 'long' ? 'LONG' : 'SHORT';
+  const typeLabel = {leverage:'Leverage',spot:'Spot',stock:'Stock'}[ticket.trade_type] || 'Leverage';
+  const fmt = p => {
+    if (!p) return '?';
+    if (p >= 1000) return '$' + Number(p).toLocaleString('en-US',{minimumFractionDigits:2,maximumFractionDigits:2}).replace(/\.?0+$/,'');
+    if (p >= 1) return '$' + p.toFixed(4).replace(/\.?0+$/,'');
+    return '$' + p.toFixed(8).replace(/\.?0+$/,'');
+  };
+  const pctStr = (entry, level) => {
+    if (!entry || !level) return '';
+    let d = (level - entry) / entry * 100;
+    if (dir === 'SHORT') d = -d;
+    return ` (${d>=0?'+':''}${d.toFixed(2)}%)`;
+  };
+
+  let lines = [`${sym.replace('-','/').toUpperCase()} ${EM} ${dir} (${typeLabel})`];
+  if (ticket.is_market || !ticket.entry) {
+    lines.push('Entry at CMP');
+  } else if (ticket.dcas && ticket.dcas.length) {
+    ticket.dcas.forEach((d,i) => {
+      const alloc = d.alloc ? ` [${d.alloc}%]` : '';
+      lines.push(`Entry ${i+1} ${fmt(d.price)}${alloc}`);
+    });
+  } else {
+    lines.push(`Entry ${fmt(ticket.entry)}`);
+  }
+  if (ticket.sl) {
+    const slSuffix = ticket.sl_type === 'soft' && ticket.sl_tf ? ` (Soft — ${ticket.sl_tf} candle close)` : '';
+    lines.push(`Stop Loss ${fmt(ticket.sl)}${pctStr(ticket.entry, ticket.sl)}${slSuffix}`);
+  }
+  const cleanTps = (ticket.tps||[]).filter(t => t);
+  if (cleanTps.length === 1) {
+    lines.push(`Take Profit ${fmt(cleanTps[0])}${pctStr(ticket.entry, cleanTps[0])}`);
+  } else {
+    cleanTps.forEach((tp,i) => lines.push(`Take Profit ${i+1} ${fmt(tp)}${pctStr(ticket.entry, tp)}`));
+  }
+  if (ticket.notes) { lines.push(''); lines.push(ticket.notes); }
+
+  document.getElementById('preview-text').textContent = lines.join('\n');
+  document.getElementById('preview-modal').classList.add('open');
+}
+
+function confirmFire() {
+  closeModal('preview-modal');
+  const ticket = buildTicket();
+  const btn = document.getElementById('fire-btn');
+  btn.disabled = true; btn.textContent = '…';
 
   fetch('/api/fire', {
-    method: 'POST',
-    headers: {'Content-Type': 'application/json'},
-    body: JSON.stringify({ exchange, symbol, side: currentDir,
-      entry, sl, tps, leverage, risk_pct: riskPct, notes,
-      chart_png_b64: screenshotB64 || '', dry_run: dryRun })
+    method: 'POST', headers: {'Content-Type':'application/json'},
+    body: JSON.stringify(ticket),
   })
   .then(r => r.json())
   .then(d => {
     btn.disabled = false;
-    btn.textContent = origText;
+    setDir(currentDir); // restore label
     if (d.ok) {
-      const discordNote = d.discord_ok ? ' · Discord ✓' : ' · Discord ✗';
-      flash('ok', dryRun
-        ? `Dry run${discordNote}`
-        : `Order placed${d.order_id ? ' #' + d.order_id : ''}${discordNote}`);
+      const dc = d.discord_ok ? ' · Discord ✓' : ' · Discord ✗';
+      flashResult('ok', ticket.dry_run ? `Dry run${dc}` : `Fired${d.order_id?' #'+d.order_id:''}${dc}`);
       clearScreenshot();
       refreshPositions();
       refreshSignals();
+      showTab('positions');
     } else {
-      flash('err', d.error || 'Unknown error');
+      flashResult('err', d.error || 'Unknown error');
     }
   })
-  .catch(() => { btn.disabled = false; btn.textContent = origText; flash('err', 'Network error'); });
+  .catch(() => { btn.disabled=false; setDir(currentDir); flashResult('err','Network error'); });
 }
 
-function flash(type, msg) {
+function flashResult(type, msg) {
   const btn = document.getElementById('fire-btn');
   const el  = document.getElementById('fire-result');
-  el.textContent = msg;
-  el.className   = 'fire-result ' + type;
-  btn.classList.add(type === 'ok' ? 'flash-ok' : 'flash-err');
+  el.textContent = msg; el.className = 'fire-result ' + type;
+  btn.classList.add(type==='ok'?'flash-ok':'flash-err');
   setTimeout(() => btn.classList.remove('flash-ok','flash-err'), 1400);
 }
 
-// Ctrl+Enter fires
 document.addEventListener('keydown', e => {
-  if ((e.ctrlKey || e.metaKey) && e.key === 'Enter') { e.preventDefault(); fire(); }
+  if ((e.ctrlKey||e.metaKey) && e.key==='Enter') { e.preventDefault(); openPreview(); }
 });
 
-// ── Positions + history ───────────────────────────────────────────────────
+// ═══════════════════════════════════════════════════════════
+// Modals
+// ═══════════════════════════════════════════════════════════
+function closeModal(id) { document.getElementById(id).classList.remove('open'); }
+document.querySelectorAll('.modal-overlay').forEach(m => {
+  m.addEventListener('click', e => { if (e.target === m) m.classList.remove('open'); });
+});
+
+// ═══════════════════════════════════════════════════════════
+// Positions panel + management
+// ═══════════════════════════════════════════════════════════
 function refreshPositions() {
   fetch('/api/positions').then(r => r.json()).then(rows => {
-    const tb = document.getElementById('positions-body');
-    if (!rows.length) { tb.innerHTML = '<tr><td colspan="5" class="empty-msg">No open positions</td></tr>'; return; }
-    tb.innerHTML = rows.map(p => `<tr>
-      <td>${p.symbol}</td>
-      <td class="${p.side==='long'?'long-text':'short-text'}">${p.side.toUpperCase()}</td>
-      <td>${p.entry ? '$'+p.entry : '—'}</td>
-      <td>${p.sl   ? '$'+p.sl   : '—'}</td>
-      <td>${p.exchange}</td></tr>`).join('');
-  }).catch(()=>{});
+    const el = document.getElementById('positions-list');
+    if (!rows.length) { el.innerHTML = '<div class="empty-msg" style="padding:8px 0;">No open positions</div>'; return; }
+    el.innerHTML = rows.map(p => {
+      const sideClass = p.side==='long' ? 'long-text' : 'short-text';
+      const dir = p.side.toUpperCase();
+      const fmt = v => v ? '$'+Number(v).toLocaleString('en-US',{maximumFractionDigits:6}) : '—';
+      const tpsText = (p.tps||[]).filter(t=>t).map((t,i)=>`TP${i+1} ${fmt(t)}`).join('  ');
+      return `<div style="border:1px solid #1a1a1a;border-radius:6px;padding:9px;margin-bottom:8px;">
+        <div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:5px;">
+          <span style="font-weight:700;font-size:13px;">${p.symbol}</span>
+          <span class="${sideClass}" style="font-weight:700;font-size:11px;">${dir}</span>
+        </div>
+        <div style="font-size:11px;color:#888;margin-bottom:6px;">
+          Entry ${fmt(p.entry)} &nbsp;·&nbsp; SL ${fmt(p.sl)} &nbsp;·&nbsp; ${p.exchange}
+          ${tpsText ? '<br>' + tpsText : ''}
+          ${p.sl_type==='soft' ? ' &nbsp;<span style="color:#dddd44;font-size:10px;">Soft SL</span>' : ''}
+        </div>
+        <div style="display:flex;flex-wrap:wrap;gap:4px;">
+          <button class="mgmt-btn" onclick="openMgmt(${p.id},'tp_hit')">✓ TP Hit</button>
+          <button class="mgmt-btn" onclick="quickSLBE(${p.id})">→ SL to BE</button>
+          <button class="mgmt-btn" onclick="openMgmt(${p.id},'move_sl')">↕ Move SL</button>
+          ${(p.dcas||[]).length ? `<button class="mgmt-btn" onclick="openMgmt(${p.id},'dca_filled')">↓ DCA Filled</button>` : ''}
+          <button class="mgmt-btn danger" onclick="openMgmt(${p.id},'close')">✕ Close</button>
+        </div>
+      </div>`;
+    }).join('');
+  }).catch(() => {});
 }
 
+function openMgmt(posId, action) {
+  fetch(`/api/positions/${posId}`)
+    .then(r => r.json())
+    .then(pos => {
+      const body = document.getElementById('mgmt-modal-body');
+      body.innerHTML = buildMgmtForm(pos, action);
+      document.getElementById('mgmt-modal').classList.add('open');
+    });
+}
+
+function buildMgmtForm(pos, action) {
+  const sym = pos.symbol;
+  const dir = pos.side.toUpperCase();
+  const tps = pos.tps || [];
+  const dcas = pos.dcas || [];
+
+  if (action === 'tp_hit') {
+    const tpOptions = tps.map((_,i) => `<option value="${i+1}">TP ${i+1}${tps[i]?' — $'+tps[i]:''}</option>`).join('');
+    return `<h3>${sym} — TP Hit</h3>
+      <label class="fl">Which TP?</label>
+      <select id="mgmt-tp-num" class="fi">${tpOptions || '<option value="1">TP 1</option>'}</select>
+      <label class="fl">Trim % (100 = full close)</label>
+      <input id="mgmt-trim" class="fi" type="number" value="100" min="1" max="100">
+      <div class="modal-footer">
+        <button class="modal-btn" onclick="closeModal('mgmt-modal')">Cancel</button>
+        <button class="modal-btn primary" onclick="submitTPHit(${pos.id})">Mark TP Hit</button>
+      </div>`;
+  }
+
+  if (action === 'move_sl') {
+    return `<h3>${sym} — Move Stop Loss</h3>
+      <label class="fl">New SL Price</label>
+      <input id="mgmt-new-sl" class="fi" placeholder="New SL (92k, 92000, cmp)" value="${pos.sl||''}">
+      <div class="modal-footer">
+        <button class="modal-btn" onclick="closeModal('mgmt-modal')">Cancel</button>
+        <button class="modal-btn primary" onclick="submitMoveSL(${pos.id})">Move SL</button>
+      </div>`;
+  }
+
+  if (action === 'dca_filled') {
+    const dcaOpts = dcas.map((d,i) => `<option value="${i+1}">DCA ${i+1}${d.price?' — $'+d.price:''}</option>`).join('');
+    return `<h3>${sym} — DCA Filled</h3>
+      <label class="fl">DCA Level</label>
+      <select id="mgmt-dca-num" class="fi">${dcaOpts || '<option value="1">Level 1</option>'}</select>
+      <label class="fl">Fill Price</label>
+      <input id="mgmt-dca-price" class="fi" placeholder="Fill price (93k)">
+      <div class="modal-footer">
+        <button class="modal-btn" onclick="closeModal('mgmt-modal')">Cancel</button>
+        <button class="modal-btn primary" onclick="submitDCAFilled(${pos.id})">Mark Filled</button>
+      </div>`;
+  }
+
+  if (action === 'close') {
+    return `<h3>${sym} ${dir} — Close Trade</h3>
+      <label class="fl">Close Price</label>
+      <input id="mgmt-close-price" class="fi" placeholder="Price (98k, cmp for market)">
+      <label class="fl">Close Type</label>
+      <select id="mgmt-close-type" class="fi">
+        <option value="profit">Profit</option>
+        <option value="stopped">Stopped Out</option>
+        <option value="cut">Cut Early</option>
+        <option value="be">Breakeven</option>
+        <option value="invalidation">Invalidation</option>
+        <option value="partial">Partial</option>
+      </select>
+      <label class="fl">% to Close</label>
+      <input id="mgmt-close-pct" class="fi" type="number" value="100" min="1" max="100">
+      <label class="fl">Notes (optional)</label>
+      <textarea id="mgmt-close-notes" class="fi textarea" placeholder="Why you closed…"></textarea>
+      <div class="modal-footer">
+        <button class="modal-btn" onclick="closeModal('mgmt-modal')">Cancel</button>
+        <button class="modal-btn danger" onclick="submitClose(${pos.id})">Close Trade</button>
+      </div>`;
+  }
+}
+
+function submitTPHit(posId) {
+  const tpIndex = document.getElementById('mgmt-tp-num').value;
+  const trim    = document.getElementById('mgmt-trim').value;
+  fetch(`/api/positions/${posId}/tp_hit`, {
+    method:'POST', headers:{'Content-Type':'application/json'},
+    body: JSON.stringify({tp_index: parseInt(tpIndex), trim_pct: parseFloat(trim)}),
+  }).then(r => r.json()).then(d => {
+    closeModal('mgmt-modal');
+    if (!d.ok) alert('Error: ' + d.error);
+    refreshPositions();
+  });
+}
+
+function quickSLBE(posId) {
+  if (!confirm('Move stop loss to breakeven (entry price)?')) return;
+  fetch(`/api/positions/${posId}/move_sl`, {
+    method:'POST', headers:{'Content-Type':'application/json'},
+    body: JSON.stringify({be: true}),
+  }).then(() => refreshPositions());
+}
+
+function submitMoveSL(posId) {
+  const raw = document.getElementById('mgmt-new-sl').value.trim();
+  let val = parsePrice(raw);
+  if (val === 'cmp') val = lastPrice;
+  fetch(`/api/positions/${posId}/move_sl`, {
+    method:'POST', headers:{'Content-Type':'application/json'},
+    body: JSON.stringify({new_sl: val}),
+  }).then(r => r.json()).then(d => {
+    closeModal('mgmt-modal');
+    if (!d.ok) alert('Error: ' + d.error);
+    refreshPositions();
+  });
+}
+
+function submitDCAFilled(posId) {
+  const num   = document.getElementById('mgmt-dca-num').value;
+  const rawP  = document.getElementById('mgmt-dca-price').value.trim();
+  const price = parsePrice(rawP) || (rawP === 'cmp' ? lastPrice : null);
+  fetch(`/api/positions/${posId}/dca_filled`, {
+    method:'POST', headers:{'Content-Type':'application/json'},
+    body: JSON.stringify({dca_index: parseInt(num), fill_price: price}),
+  }).then(r => r.json()).then(d => {
+    closeModal('mgmt-modal');
+    if (!d.ok) alert('Error: ' + d.error);
+    else alert(`DCA filled. New avg entry: $${d.new_avg_entry||'?'}`);
+    refreshPositions();
+  });
+}
+
+function submitClose(posId) {
+  const rawPrice = document.getElementById('mgmt-close-price').value.trim();
+  let price = parsePrice(rawPrice);
+  if (price === 'cmp' || rawPrice.toLowerCase() === 'cmp') price = null; // let server fetch cmp
+  fetch(`/api/positions/${posId}/close`, {
+    method:'POST', headers:{'Content-Type':'application/json'},
+    body: JSON.stringify({
+      close_price: price,
+      close_type: document.getElementById('mgmt-close-type').value,
+      close_pct:  parseFloat(document.getElementById('mgmt-close-pct').value) || 100,
+      notes: document.getElementById('mgmt-close-notes').value,
+    }),
+  }).then(r => r.json()).then(d => {
+    closeModal('mgmt-modal');
+    if (!d.ok) alert('Error: ' + d.error);
+    refreshPositions();
+    refreshPastTrades();
+  });
+}
+
+// ═══════════════════════════════════════════════════════════
+// Signals history
+// ═══════════════════════════════════════════════════════════
 function refreshSignals() {
   fetch('/api/signals').then(r => r.json()).then(rows => {
     const tb = document.getElementById('signals-body');
-    if (!rows.length) { tb.innerHTML = '<tr><td colspan="5" class="empty-msg">No signals yet</td></tr>'; return; }
+    if (!rows.length) { tb.innerHTML='<tr><td colspan="5" class="empty-msg">No signals yet</td></tr>'; return; }
     tb.innerHTML = rows.map(s => {
       const t = new Date(s.ts).toLocaleTimeString([],{hour:'2-digit',minute:'2-digit'});
       return `<tr>
-        <td>${t}</td>
-        <td>${s.symbol}</td>
+        <td>${t}</td><td>${s.symbol}</td>
         <td class="${s.side==='long'?'long-text':'short-text'}">${s.side.toUpperCase()}</td>
         <td>${s.exchange}</td>
         <td>${s.discord_ok ? '<span class="ok-dot">✓</span>' : '<span class="err-dot">✗</span>'}</td>
@@ -804,17 +1184,65 @@ function refreshSignals() {
   }).catch(()=>{});
 }
 
-// ── Init ──────────────────────────────────────────────────────────────────
+// ═══════════════════════════════════════════════════════════
+// Past trades
+// ═══════════════════════════════════════════════════════════
+const CB_CLASS = {profit:'cb-profit',stopped:'cb-stopped',cut:'cb-cut',be:'cb-be',invalidation:'cb-invalidation',partial:'cb-partial'};
+
+function refreshPastTrades() {
+  fetch('/api/positions/closed').then(r => r.json()).then(rows => {
+    const tb = document.getElementById('past-body');
+    if (!rows.length) { tb.innerHTML='<tr><td colspan="5" class="empty-msg">No closed trades yet</td></tr>'; return; }
+    const fmt = v => v ? '$'+Number(v).toLocaleString('en-US',{maximumFractionDigits:4}) : '—';
+    tb.innerHTML = rows.map(p => {
+      const ct = p.close_type || 'profit';
+      const badge = `<span class="close-badge ${CB_CLASS[ct]||'cb-be'}">${ct}</span>`;
+      return `<tr class="past-trade-row">
+        <td>${p.symbol}</td>
+        <td class="${p.side==='long'?'long-text':'short-text'}">${p.side.toUpperCase()}</td>
+        <td>${badge}</td>
+        <td style="font-size:10px;">${fmt(p.entry)} → ${fmt(p.close_price)}</td>
+        <td><button class="mgmt-btn" onclick="openEditClose(${p.id},'${p.close_price||''}','${p.close_type||'profit'}',${JSON.stringify(p.close_notes||'')})">Edit</button></td>
+      </tr>`;
+    }).join('');
+  }).catch(()=>{});
+}
+
+function openEditClose(posId, price, type, notes) {
+  document.getElementById('ec-pos-id').value = posId;
+  document.getElementById('ec-price').value  = price || '';
+  document.getElementById('ec-type').value   = type  || 'profit';
+  document.getElementById('ec-notes').value  = notes || '';
+  document.getElementById('edit-close-modal').classList.add('open');
+}
+
+function submitEditClose() {
+  const posId = document.getElementById('ec-pos-id').value;
+  fetch(`/api/positions/${posId}/edit_close`, {
+    method:'POST', headers:{'Content-Type':'application/json'},
+    body: JSON.stringify({
+      close_price: parseFloat(document.getElementById('ec-price').value) || null,
+      close_type:  document.getElementById('ec-type').value,
+      notes:       document.getElementById('ec-notes').value,
+    }),
+  }).then(r => r.json()).then(d => {
+    closeModal('edit-close-modal');
+    if (!d.ok) alert('Error: ' + d.error);
+    refreshPastTrades();
+  });
+}
+
+// ═══════════════════════════════════════════════════════════
+// Init
+// ═══════════════════════════════════════════════════════════
 document.addEventListener('DOMContentLoaded', () => {
   const saved = localStorage.getItem('lastSymbol') || 'BTC-USDT';
   document.getElementById('symbol').value = saved;
-  buildTV(saved, '1');
+  buildTV(saved, currentTF);
   fetchSymbols(document.getElementById('exchange').value);
   startPricePolling();
   refreshPositions();
-  refreshSignals();
   setInterval(refreshPositions, 10000);
-  setInterval(refreshSignals,  15000);
 });
 </script>
 </body>

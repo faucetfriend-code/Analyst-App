@@ -66,24 +66,28 @@ def execute_and_post(analyst_id: int, ticket: dict) -> dict:
         chart_png_b64 str|None base64-encoded PNG screenshot
         dry_run       bool     if True, skip exchange call
     """
-    exchange = ticket.get("exchange", "blofin")
-    symbol = _normalize_symbol(ticket.get("symbol", "BTC-USDT"))
-    side = ticket.get("side", "long").lower()
-    entry = ticket.get("entry")
-    sl = ticket.get("sl")
+    exchange    = ticket.get("exchange", "blofin")
+    symbol      = _normalize_symbol(ticket.get("symbol", "BTC-USDT"))
+    side        = ticket.get("side", "long").lower()
+    entry       = ticket.get("entry")
+    sl          = ticket.get("sl")
     tps: list[float] = [t for t in (ticket.get("tps") or []) if t is not None]
-    tp_first = tps[0] if tps else None
-    leverage = int(ticket.get("leverage", 75))
-    risk_pct = float(ticket.get("risk_pct", 0.01))
-    notes = ticket.get("notes", "")
-    chart_b64 = ticket.get("chart_png_b64", "")
-    dry_run = ticket.get("dry_run", False)
+    tp_first    = tps[0] if tps else None
+    leverage    = int(ticket.get("leverage", 75))
+    risk_pct    = float(ticket.get("risk_pct", 0.01))
+    notes       = ticket.get("notes", "")
+    chart_b64   = ticket.get("chart_png_b64", "")
+    dry_run     = ticket.get("dry_run", False)
+    trade_type  = ticket.get("trade_type", "leverage")
+    sl_type     = ticket.get("sl_type", "hard")
+    sl_tf       = ticket.get("sl_tf", "")
+    dcas        = ticket.get("dcas") or []
+    is_market   = ticket.get("is_market", entry is None)
 
     # Basic sanity checks
     if side not in ("long", "short"):
         return {"ok": False, "error": f"Invalid side: {side}"}
 
-    is_market = entry is None
     if not is_market:
         entry = float(entry)
     if sl is not None:
@@ -135,18 +139,21 @@ def execute_and_post(analyst_id: int, ticket: dict) -> dict:
             order_id = result.get("order_id", "")
 
             # Store position
-            db.open_position(analyst_id, exchange, symbol, side, entry or 0.0, sl or 0.0, tps, size, order_id)
+            db.open_position(analyst_id, exchange, symbol, side, entry or 0.0, sl or 0.0, tps, size, order_id,
+                             trade_type=trade_type, sl_type=sl_type, sl_tf=sl_tf, dcas=dcas, notes=notes)
 
         except Exception as e:
             return {"ok": False, "error": f"Exchange execution failed: {e}"}
 
     # Post to Discord
-    text = format_signal(symbol, side, entry, sl, tps, is_market, notes)
+    text = format_signal(symbol, side, entry, sl, tps, is_market, notes,
+                         trade_type=trade_type, sl_type=sl_type, sl_tf=sl_tf, dcas=dcas)
     png_bytes = png_from_b64(chart_b64) if chart_b64 else None
     discord_ok = post_to_discord(webhook_url, text, png_bytes)
 
     # Log signal
-    db.log_signal(analyst_id, symbol, side, entry, sl, tps, exchange, order_id, discord_ok, notes)
+    db.log_signal(analyst_id, symbol, side, entry, sl, tps, exchange, order_id, discord_ok,
+                  notes=notes, trade_type=trade_type, sl_type=sl_type, dcas=dcas)
 
     result_msg = "dry_run — no order placed" if dry_run else f"order_id={order_id}"
     return {

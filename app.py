@@ -1,7 +1,7 @@
 import os
 import functools
 from flask import (Flask, render_template, request, session,
-                   redirect, url_for, jsonify, abort)
+                   redirect, url_for, jsonify, abort, after_this_request)
 from dotenv import load_dotenv
 
 import analyst_db as db
@@ -12,6 +12,21 @@ load_dotenv()
 
 app = Flask(__name__)
 app.secret_key = os.environ.get("SECRET_KEY", "dev-change-me")
+
+# CORS for the Chrome extension (chrome-extension://* origins)
+@app.after_request
+def add_cors(response):
+    origin = request.headers.get("Origin", "")
+    if origin.startswith("chrome-extension://") or origin.startswith("moz-extension://"):
+        response.headers["Access-Control-Allow-Origin"] = origin
+        response.headers["Access-Control-Allow-Credentials"] = "true"
+        response.headers["Access-Control-Allow-Headers"] = "Content-Type"
+        response.headers["Access-Control-Allow-Methods"] = "GET, POST, OPTIONS"
+    return response
+
+@app.route("/api/<path:p>", methods=["OPTIONS"])
+def options_handler(p):
+    return "", 204
 
 db.init_db()
 
@@ -63,6 +78,18 @@ def logout():
 
 
 # ── Main trader page ──────────────────────────────────────────────────────────
+
+@app.route("/mobile")
+@login_required
+def mobile():
+    analyst = current_analyst()
+    exchanges = db.get_configured_exchanges(analyst["id"])
+    exchange_labels = {k: EXCHANGE_LABELS.get(k, k.title()) for k in exchanges}
+    return render_template("mobile.html",
+                           analyst=analyst,
+                           exchanges=exchanges,
+                           exchange_labels=exchange_labels)
+
 
 @app.route("/")
 @login_required
@@ -174,6 +201,178 @@ def get_symbols(exchange):
 def get_positions():
     positions = db.get_open_positions(session["analyst_id"])
     return jsonify(positions)
+
+
+@app.route("/api/positions/closed")
+@login_required
+def get_closed_positions():
+    limit = int(request.args.get("limit", 30))
+    positions = db.get_closed_positions(session["analyst_id"], limit=limit)
+    return jsonify(positions)
+
+
+@app.route("/api/positions/<int:pos_id>")
+@login_required
+def get_position(pos_id):
+    pos = db.get_position(pos_id, session["analyst_id"])
+    if not pos:
+        return jsonify({"ok": False, "error": "Not found"}), 404
+    pos["events"] = db.get_position_events(pos_id)
+    return jsonify(pos)
+
+
+@app.route("/api/positions/<int:pos_id>/tp_hit", methods=["POST"])
+@login_required
+def tp_hit(pos_id):
+    data = request.get_json(force=True) or {}
+    tp_index = int(data.get("tp_index", 1)) - 1   # 1-based from UI → 0-based in DB
+    trim_pct  = float(data.get("trim_pct", 100))
+    price     = data.get("price")
+
+    pos = db.get_position(pos_id, session["analyst_id"])
+    if not pos:
+        return jsonify({"ok": False, "error": "Not found"}), 404
+
+    db.mark_tp_hit(pos_id, session["analyst_id"], tp_index + 1)
+    detail = {"tp_num": tp_index + 1, "trim_pct": trim_pct}
+    if price:
+        detail["price"] = float(price)
+    db.add_position_event(pos_id, session["analyst_id"], "tp_hit", detail)
+
+    # Post update to Discord
+    analyst = current_analyst()
+    if analyst.get("discord_webhook_url"):
+        from discord_poster import format_trade_update, post_to_discord
+        msg = format_trade_update(pos["symbol"], pos["side"], "tp_hit", detail)
+        post_to_discord(analyst["discord_webhook_url"], msg)
+
+    return jsonify({"ok": True})
+
+
+@app.route("/api/positions/<int:pos_id>/move_sl", methods=["POST"])
+@login_required
+def move_sl(pos_id):
+    data = request.get_json(force=True) or {}
+    new_sl = data.get("new_sl")
+    be     = data.get("be", False)        # True = move to breakeven (entry price)
+
+    pos = db.get_position(pos_id, session["analyst_id"])
+    if not pos:
+        return jsonify({"ok": False, "error": "Not found"}), 404
+
+    if be:
+        new_sl = pos["entry"]
+        event_type = "sl_be"
+        detail = {}
+    else:
+        if new_sl is None:
+            return jsonify({"ok": False, "error": "new_sl required"}), 400
+        new_sl = float(new_sl)
+        event_type = "move_sl"
+        detail = {"new_sl": new_sl}
+
+    db.update_position_sl(pos_id, session["analyst_id"], new_sl)
+    db.add_position_event(pos_id, session["analyst_id"], event_type, detail)
+
+    analyst = current_analyst()
+    if analyst.get("discord_webhook_url"):
+        from discord_poster import format_trade_update, post_to_discord
+        msg = format_trade_update(pos["symbol"], pos["side"], event_type, detail)
+        post_to_discord(analyst["discord_webhook_url"], msg)
+
+    return jsonify({"ok": True, "new_sl": new_sl})
+
+
+@app.route("/api/positions/<int:pos_id>/dca_filled", methods=["POST"])
+@login_required
+def dca_filled(pos_id):
+    data = request.get_json(force=True) or {}
+    dca_index = int(data.get("dca_index", 1)) - 1   # 1-based → 0-based
+    fill_price = float(data.get("fill_price", 0))
+
+    pos = db.get_position(pos_id, session["analyst_id"])
+    if not pos:
+        return jsonify({"ok": False, "error": "Not found"}), 404
+
+    db.mark_dca_filled(pos_id, session["analyst_id"], dca_index, fill_price)
+    pos_updated = db.get_position(pos_id, session["analyst_id"])
+    detail = {"dca_num": dca_index + 1, "price": fill_price,
+              "new_avg": pos_updated.get("entry")}
+    db.add_position_event(pos_id, session["analyst_id"], "dca_filled", detail)
+
+    analyst = current_analyst()
+    if analyst.get("discord_webhook_url"):
+        from discord_poster import format_trade_update, post_to_discord
+        msg = format_trade_update(pos["symbol"], pos["side"], "dca_filled", detail)
+        post_to_discord(analyst["discord_webhook_url"], msg)
+
+    return jsonify({"ok": True, "new_avg_entry": pos_updated.get("entry")})
+
+
+@app.route("/api/positions/<int:pos_id>/close", methods=["POST"])
+@login_required
+def close_position(pos_id):
+    data = request.get_json(force=True) or {}
+    close_price = data.get("close_price")
+    close_type  = data.get("close_type", "profit")
+    close_pct   = float(data.get("close_pct", 100))
+    close_notes = data.get("notes", "")
+
+    VALID_CLOSE_TYPES = {"profit","stopped","cut","be","invalidation","partial"}
+    if close_type not in VALID_CLOSE_TYPES:
+        return jsonify({"ok": False, "error": f"close_type must be one of {VALID_CLOSE_TYPES}"}), 400
+
+    pos = db.get_position(pos_id, session["analyst_id"])
+    if not pos:
+        return jsonify({"ok": False, "error": "Not found"}), 404
+
+    # Resolve CMP
+    if close_price in (None, "", "cmp"):
+        try:
+            exchange = pos["exchange"]
+            creds = db.get_credentials(session["analyst_id"], exchange)
+            adapter = get_adapter(exchange, creds)
+            close_price = adapter.get_market_price(pos["symbol"])
+        except Exception as e:
+            return jsonify({"ok": False, "error": f"Could not fetch CMP: {e}"}), 400
+    else:
+        close_price = float(close_price)
+
+    db.close_position(pos_id, session["analyst_id"],
+                      close_price, close_type, close_pct, close_notes)
+    detail = {"price": close_price, "close_type": close_type,
+              "pct": close_pct, "notes": close_notes}
+    db.add_position_event(pos_id, session["analyst_id"], "close", detail)
+
+    analyst = current_analyst()
+    if analyst.get("discord_webhook_url"):
+        from discord_poster import format_trade_update, post_to_discord
+        msg = format_trade_update(pos["symbol"], pos["side"], "close", detail)
+        post_to_discord(analyst["discord_webhook_url"], msg)
+
+    return jsonify({"ok": True, "close_price": close_price})
+
+
+@app.route("/api/positions/<int:pos_id>/edit_close", methods=["POST"])
+@login_required
+def edit_close(pos_id):
+    """Edit a closed position's close details (for Past Trades view)."""
+    data = request.get_json(force=True) or {}
+    pos = db.get_position(pos_id, session["analyst_id"])
+    if not pos:
+        return jsonify({"ok": False, "error": "Not found"}), 404
+
+    close_price = float(data.get("close_price", pos.get("close_price") or 0))
+    close_type  = data.get("close_type", pos.get("close_type", "profit"))
+    close_notes = data.get("notes", pos.get("close_notes", ""))
+
+    import sqlite3, os
+    with sqlite3.connect(os.path.join(os.path.dirname(__file__), "analyst.db")) as c:
+        c.execute(
+            "UPDATE analyst_positions SET close_price=?, close_type=?, close_notes=? WHERE id=? AND analyst_id=?",
+            (close_price, close_type, close_notes, pos_id, session["analyst_id"])
+        )
+    return jsonify({"ok": True})
 
 
 @app.route("/api/signals")

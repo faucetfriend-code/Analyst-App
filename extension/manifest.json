@@ -1,0 +1,32 @@
+{
+  "manifest_version": 3,
+  "name": "Analyst Trade Panel",
+  "version": "1.0.0",
+  "description": "Trade execution panel for TradingView — fires trades and Discord signals in one click.",
+  "permissions": ["storage", "cookies"],
+  "host_permissions": [
+    "http://localhost:5051/*",
+    "https://www.tradingview.com/*"
+  ],
+  "content_scripts": [
+    {
+      "matches": ["https://www.tradingview.com/*"],
+      "js": ["content.js"],
+      "css": ["panel.css"],
+      "run_at": "document_idle"
+    }
+  ],
+  "action": {
+    "default_title": "Analyst Trade Panel",
+    "default_icon": {
+      "16":  "icons/icon16.png",
+      "48":  "icons/icon48.png",
+      "128": "icons/icon128.png"
+    }
+  },
+  "icons": {
+    "16":  "icons/icon16.png",
+    "48":  "icons/icon48.png",
+    "128": "icons/icon128.png"
+  }
+}

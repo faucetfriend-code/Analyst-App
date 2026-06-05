@@ -58,14 +58,24 @@ def init_db():
             analyst_id INTEGER NOT NULL REFERENCES analyst_profiles(id),
             exchange TEXT NOT NULL,
             symbol TEXT NOT NULL,
+            trade_type TEXT NOT NULL DEFAULT 'leverage',
             side TEXT NOT NULL,
             entry REAL,
             sl REAL,
+            sl_type TEXT NOT NULL DEFAULT 'hard',
+            sl_tf TEXT,
             tps_json TEXT,
+            tps_hit INTEGER NOT NULL DEFAULT 0,
+            dcas_json TEXT,
             size REAL,
             order_id TEXT,
+            notes TEXT,
             opened_at TEXT NOT NULL,
             closed_at TEXT,
+            close_price REAL,
+            close_type TEXT,
+            close_pct REAL,
+            close_notes TEXT,
             status TEXT NOT NULL DEFAULT 'open'
         );
 
@@ -74,14 +84,26 @@ def init_db():
             analyst_id INTEGER NOT NULL REFERENCES analyst_profiles(id),
             ts TEXT NOT NULL,
             symbol TEXT NOT NULL,
+            trade_type TEXT NOT NULL DEFAULT 'leverage',
             side TEXT NOT NULL,
             entry REAL,
             sl REAL,
+            sl_type TEXT NOT NULL DEFAULT 'hard',
             tps_json TEXT,
+            dcas_json TEXT,
             exchange TEXT NOT NULL,
             order_id TEXT,
             discord_ok INTEGER NOT NULL DEFAULT 0,
             notes TEXT
+        );
+
+        CREATE TABLE IF NOT EXISTS position_events (
+            id INTEGER PRIMARY KEY AUTOINCREMENT,
+            position_id INTEGER NOT NULL REFERENCES analyst_positions(id),
+            analyst_id INTEGER NOT NULL,
+            ts TEXT NOT NULL,
+            event_type TEXT NOT NULL,
+            detail_json TEXT
         );
         """)
 
@@ -175,14 +197,20 @@ def get_credentials_masked(analyst_id: int) -> list[dict]:
 # ── Positions ─────────────────────────────────────────────────────────────────
 
 def open_position(analyst_id: int, exchange: str, symbol: str, side: str,
-                  entry: float, sl: float, tps: list, size: float, order_id: str):
+                  entry: float, sl: float, tps: list, size: float, order_id: str,
+                  trade_type: str = "leverage", sl_type: str = "hard",
+                  sl_tf: str = "", dcas: list = None, notes: str = "") -> int:
     ts = datetime.now(timezone.utc).isoformat()
     with _conn() as c:
-        c.execute(
-            "INSERT INTO analyst_positions (analyst_id, exchange, symbol, side, entry, sl, "
-            "tps_json, size, order_id, opened_at, status) VALUES (?,?,?,?,?,?,?,?,?,?,'open')",
-            (analyst_id, exchange, symbol, side, entry, sl, json.dumps(tps), size, order_id, ts)
+        cur = c.execute(
+            "INSERT INTO analyst_positions (analyst_id, exchange, symbol, trade_type, side, entry, sl, "
+            "sl_type, sl_tf, tps_json, dcas_json, size, order_id, notes, opened_at, status) "
+            "VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,'open')",
+            (analyst_id, exchange, symbol, trade_type, side, entry, sl,
+             sl_type, sl_tf, json.dumps(tps), json.dumps(dcas or []),
+             size, order_id, notes, ts)
         )
+        return cur.lastrowid
 
 def get_open_positions(analyst_id: int) -> list[dict]:
     with _conn() as c:
@@ -190,32 +218,104 @@ def get_open_positions(analyst_id: int) -> list[dict]:
             "SELECT * FROM analyst_positions WHERE analyst_id=? AND status='open' ORDER BY opened_at DESC",
             (analyst_id,)
         ).fetchall()
-    result = []
-    for r in rows:
-        d = dict(r)
-        d["tps"] = json.loads(d["tps_json"] or "[]")
-        result.append(d)
-    return result
+    return [_enrich_position(dict(r)) for r in rows]
 
-def close_position(position_id: int):
+def get_closed_positions(analyst_id: int, limit: int = 30) -> list[dict]:
+    with _conn() as c:
+        rows = c.execute(
+            "SELECT * FROM analyst_positions WHERE analyst_id=? AND status='closed' ORDER BY closed_at DESC LIMIT ?",
+            (analyst_id, limit)
+        ).fetchall()
+    return [_enrich_position(dict(r)) for r in rows]
+
+def get_position(position_id: int, analyst_id: int) -> dict | None:
+    with _conn() as c:
+        row = c.execute(
+            "SELECT * FROM analyst_positions WHERE id=? AND analyst_id=?",
+            (position_id, analyst_id)
+        ).fetchone()
+    return _enrich_position(dict(row)) if row else None
+
+def _enrich_position(d: dict) -> dict:
+    d["tps"]  = json.loads(d.get("tps_json")  or "[]")
+    d["dcas"] = json.loads(d.get("dcas_json") or "[]")
+    return d
+
+def update_position_sl(position_id: int, analyst_id: int, new_sl: float):
+    with _conn() as c:
+        c.execute("UPDATE analyst_positions SET sl=? WHERE id=? AND analyst_id=?",
+                  (new_sl, position_id, analyst_id))
+
+def mark_tp_hit(position_id: int, analyst_id: int, tp_index: int):
+    with _conn() as c:
+        c.execute("UPDATE analyst_positions SET tps_hit=? WHERE id=? AND analyst_id=?",
+                  (tp_index, position_id, analyst_id))
+
+def mark_dca_filled(position_id: int, analyst_id: int, dca_index: int, fill_price: float):
+    pos = get_position(position_id, analyst_id)
+    if not pos:
+        return
+    dcas = pos["dcas"]
+    if 0 <= dca_index < len(dcas):
+        dcas[dca_index]["filled"] = True
+        dcas[dca_index]["fill_price"] = fill_price
+        # Recalculate weighted average entry
+        filled = [d for d in dcas if d.get("filled")]
+        if filled:
+            total_alloc = sum(d.get("alloc", 0) for d in filled)
+            if total_alloc > 0:
+                avg = sum(d["fill_price"] * d.get("alloc", 0) for d in filled) / total_alloc
+                with _conn() as c:
+                    c.execute("UPDATE analyst_positions SET dcas_json=?, entry=? WHERE id=? AND analyst_id=?",
+                              (json.dumps(dcas), avg, position_id, analyst_id))
+                return
+    with _conn() as c:
+        c.execute("UPDATE analyst_positions SET dcas_json=? WHERE id=? AND analyst_id=?",
+                  (json.dumps(dcas), position_id, analyst_id))
+
+def close_position(position_id: int, analyst_id: int, close_price: float,
+                   close_type: str, close_pct: float, close_notes: str = ""):
+    ts = datetime.now(timezone.utc).isoformat()
+    status = "closed" if close_pct >= 100 else "open"
+    with _conn() as c:
+        c.execute(
+            "UPDATE analyst_positions SET status=?, closed_at=?, close_price=?, "
+            "close_type=?, close_pct=?, close_notes=? WHERE id=? AND analyst_id=?",
+            (status, ts if status == "closed" else None,
+             close_price, close_type, close_pct, close_notes,
+             position_id, analyst_id)
+        )
+
+def add_position_event(position_id: int, analyst_id: int, event_type: str, detail: dict):
     ts = datetime.now(timezone.utc).isoformat()
     with _conn() as c:
         c.execute(
-            "UPDATE analyst_positions SET status='closed', closed_at=? WHERE id=?",
-            (ts, position_id)
+            "INSERT INTO position_events (position_id, analyst_id, ts, event_type, detail_json) VALUES (?,?,?,?,?)",
+            (position_id, analyst_id, ts, event_type, json.dumps(detail))
         )
+
+def get_position_events(position_id: int) -> list[dict]:
+    with _conn() as c:
+        rows = c.execute(
+            "SELECT * FROM position_events WHERE position_id=? ORDER BY ts ASC",
+            (position_id,)
+        ).fetchall()
+    return [dict(r) for r in rows]
 
 # ── Signal log ────────────────────────────────────────────────────────────────
 
 def log_signal(analyst_id: int, symbol: str, side: str, entry: float | None,
                sl: float | None, tps: list, exchange: str, order_id: str | None,
-               discord_ok: bool, notes: str = ""):
+               discord_ok: bool, notes: str = "", trade_type: str = "leverage",
+               sl_type: str = "hard", dcas: list = None):
     ts = datetime.now(timezone.utc).isoformat()
     with _conn() as c:
         c.execute(
-            "INSERT INTO analyst_signals (analyst_id, ts, symbol, side, entry, sl, tps_json, "
-            "exchange, order_id, discord_ok, notes) VALUES (?,?,?,?,?,?,?,?,?,?,?)",
-            (analyst_id, ts, symbol, side, entry, sl, json.dumps(tps), exchange,
+            "INSERT INTO analyst_signals (analyst_id, ts, symbol, trade_type, side, entry, sl, "
+            "sl_type, tps_json, dcas_json, exchange, order_id, discord_ok, notes) "
+            "VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?)",
+            (analyst_id, ts, symbol, trade_type, side, entry, sl, sl_type,
+             json.dumps(tps), json.dumps(dcas or []), exchange,
              order_id, 1 if discord_ok else 0, notes)
         )
 
@@ -228,6 +328,7 @@ def get_analyst_signals(analyst_id: int, limit: int = 20) -> list[dict]:
     result = []
     for r in rows:
         d = dict(r)
-        d["tps"] = json.loads(d["tps_json"] or "[]")
+        d["tps"]  = json.loads(d.get("tps_json")  or "[]")
+        d["dcas"] = json.loads(d.get("dcas_json") or "[]")
         result.append(d)
     return result
