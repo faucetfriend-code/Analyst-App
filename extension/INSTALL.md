@@ -5,7 +5,7 @@
 1. Open Chrome and go to `chrome://extensions`
 2. Enable **Developer mode** (toggle, top-right)
 3. Click **Load unpacked**
-4. Select this folder: `C:\Users\z_shi\Desktop\N8NPROJECTS\Analyst App\extension`
+4. Select this folder: `G:\ai-workspace\Analyst App\extension`
 5. The extension installs immediately — no restart needed
 
 ## How to use
